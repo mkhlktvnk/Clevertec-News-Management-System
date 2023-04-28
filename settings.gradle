@@ -1,2 +1,3 @@
 rootProject.name = 'Clevertec-News-Management-System'
+include 'resource-server'
 
