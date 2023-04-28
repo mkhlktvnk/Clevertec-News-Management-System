@@ -26,6 +26,7 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok:1.18.26'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.testcontainers:testcontainers:postgres:1.18.0'
     testCompileOnly 'org.projectlombok:lombok:1.18.26'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.26'
 }
