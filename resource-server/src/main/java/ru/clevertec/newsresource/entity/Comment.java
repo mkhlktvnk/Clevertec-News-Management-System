@@ -23,7 +23,7 @@ import java.time.Instant;
 @EqualsAndHashCode
 @Entity
 @Table(name = "comments")
-public class Comment implements BaseEntity<Long> {
+public class Comment implements Identifiable<Long> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

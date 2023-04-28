@@ -22,7 +22,7 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @Table(name = "news")
-public class News implements BaseEntity<Long> {
+public class News implements Identifiable<Long> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
