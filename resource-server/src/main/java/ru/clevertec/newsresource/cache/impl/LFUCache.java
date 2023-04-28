@@ -22,10 +22,11 @@ public class LFUCache implements Cache<String, Object> {
     }
 
     @Override
-    public void put(String key, Object value) {
-        if (cache.containsKey(key)) {
-            cache.put(key, value);
-            get(key);
+    public void put(String key, String name, Object value) {
+        String cacheKey = key + ":" + name;
+        if (cache.containsKey(cacheKey)) {
+            cache.put(cacheKey, value);
+            get(key, name);
             return;
         }
 
@@ -36,27 +37,29 @@ public class LFUCache implements Cache<String, Object> {
             usageCount.remove(evictionCandidate);
         }
 
-        cache.put(key, value);
-        usageCount.put(key, 1);
-        frequencyList.get(1).add(key);
+        cache.put(cacheKey, value);
+        usageCount.put(cacheKey, 1);
+        frequencyList.get(1).add(cacheKey);
         minFrequency = 1;
     }
 
     @Override
-    public Object get(String key) {
-        if (!cache.containsKey(key)) {
+    public Object get(String key, String name) {
+        String cacheKey = key + ":" + name;
+        if (!cache.containsKey(cacheKey)) {
             return null;
         }
 
-        int count = usageCount.get(key);
-        usageCount.put(key, count + 1);
-        frequencyList.get(count).remove(key);
+        int count = usageCount.get(cacheKey);
+        usageCount.put(cacheKey, count + 1);
+        frequencyList.get(count).remove(cacheKey);
         if (count == minFrequency && frequencyList.get(count).isEmpty()) {
             minFrequency++;
             frequencyList.remove(count);
         }
         frequencyList.putIfAbsent(count + 1, new LinkedHashSet<>());
-        frequencyList.get(count + 1).add(key);
-        return cache.get(key);
+        frequencyList.get(count + 1).add(cacheKey);
+        return cache.get(cacheKey);
     }
 }
+
