@@ -12,3 +12,7 @@ spring:
         format_sql: true
   liquibase:
     enabled: true
+
+cache:
+  evict-strategy: LRU
+  capacity: 1000
