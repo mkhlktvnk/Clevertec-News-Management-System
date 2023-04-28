@@ -13,11 +13,9 @@ import ru.clevertec.newsresource.service.NewsService;
 import ru.clevertec.newsresource.service.exception.ResourceNotFoundException;
 import ru.clevertec.newsresource.service.message.MessagesSource;
 import ru.clevertec.newsresource.service.message.NewsMessageKey;
+import ru.clevertec.newsresource.specifications.NewsSpecifications;
 
 import java.util.List;
-
-import static ru.clevertec.newsresource.specifications.NewsSpecifications.hasTextLike;
-import static ru.clevertec.newsresource.specifications.NewsSpecifications.hasTitleLike;
 
 @Service
 @Transactional(readOnly = true)
@@ -29,8 +27,8 @@ public class NewsServiceImpl implements NewsService {
 
     @Override
     public List<News> findAllByPageableAndCriteria(Pageable pageable, NewsCriteria criteria) {
-        Specification<News> searchSpecification = Specification.where(hasTitleLike(criteria.getTitle()))
-                .and(hasTextLike(criteria.getTitle()));
+        Specification<News> searchSpecification = Specification.where(NewsSpecifications.hasTitleLike(criteria.getTitle()))
+                .and(NewsSpecifications.hasTextLike(criteria.getTitle()));
 
         return newsRepository.findAll(searchSpecification, pageable).getContent();
     }
