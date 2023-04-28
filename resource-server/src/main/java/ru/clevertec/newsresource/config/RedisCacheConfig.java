@@ -10,7 +10,7 @@ import ru.clevertec.newsresource.cache.Cache;
 import ru.clevertec.newsresource.cache.impl.RedisCache;
 
 @Profile("prod")
-public class RedisConfig {
+public class RedisCacheConfig {
 
     @Bean
     public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
