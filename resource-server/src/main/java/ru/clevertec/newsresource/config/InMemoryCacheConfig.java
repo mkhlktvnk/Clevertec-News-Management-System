@@ -11,7 +11,7 @@ import ru.clevertec.newsresource.cache.CacheProperties;
 @Configuration
 @Profile({"dev", "test"})
 @RequiredArgsConstructor
-public class CustomCacheConfig {
+public class InMemoryCacheConfig {
     private final CacheProperties cacheProperties;
 
     @Bean
