@@ -5,8 +5,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import ru.clevertec.newsresource.cache.Cache;
-import ru.clevertec.newsresource.cache.CacheFactory;
-import ru.clevertec.newsresource.cache.CacheProperties;
+import ru.clevertec.newsresource.cache.factory.CacheFactory;
+import ru.clevertec.newsresource.cache.properties.CacheProperties;
 
 @Configuration
 @Profile({"dev", "test"})

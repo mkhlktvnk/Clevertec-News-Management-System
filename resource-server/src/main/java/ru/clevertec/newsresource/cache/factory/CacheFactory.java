@@ -1,6 +1,8 @@
-package ru.clevertec.newsresource.cache;
+package ru.clevertec.newsresource.cache.factory;
 
 import lombok.NoArgsConstructor;
+import ru.clevertec.newsresource.cache.Cache;
+import ru.clevertec.newsresource.cache.constant.EvictStrategy;
 import ru.clevertec.newsresource.cache.impl.LFUCache;
 import ru.clevertec.newsresource.cache.impl.LRUCache;
 

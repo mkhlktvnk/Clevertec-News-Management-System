@@ -1,4 +1,4 @@
-package ru.clevertec.newsresource.cache;
+package ru.clevertec.newsresource.cache.constant;
 
 public class EvictStrategy {
     public static final String LFU = "LFU";

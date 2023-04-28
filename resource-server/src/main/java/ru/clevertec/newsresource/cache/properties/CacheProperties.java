@@ -1,4 +1,4 @@
-package ru.clevertec.newsresource.cache;
+package ru.clevertec.newsresource.cache.properties;
 
 import lombok.Getter;
 import lombok.Setter;
