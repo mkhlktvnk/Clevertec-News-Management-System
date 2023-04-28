@@ -37,9 +37,6 @@ class CommentServiceImplTest {
     private CommentRepository commentRepository;
 
     @Mock
-    private ModelMapper modelMapper;
-
-    @Mock
     private MessagesSource messagesSource;
 
     @InjectMocks
@@ -103,7 +100,6 @@ class CommentServiceImplTest {
         commentService.updateCommentPartiallyById(COMMENT_ID, updateComment);
 
         verify(commentRepository).findById(COMMENT_ID);
-        verify(modelMapper).map(updateComment, commentFromDb);
         verify(commentRepository).save(commentFromDb);
     }
 

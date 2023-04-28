@@ -23,7 +23,7 @@ import java.util.List;
 public class NewsServiceImpl implements NewsService {
     private final NewsRepository newsRepository;
     private final MessagesSource messagesSource;
-    private final ModelMapper modelMapper;
+    private final ModelMapper modelMapper = new ModelMapper();
 
     @Override
     public List<News> findAllByPageableAndCriteria(Pageable pageable, NewsCriteria criteria) {

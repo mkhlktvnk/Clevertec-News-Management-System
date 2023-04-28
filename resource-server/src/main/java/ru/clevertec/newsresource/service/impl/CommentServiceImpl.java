@@ -22,8 +22,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
-    private final ModelMapper modelMapper;
     private final MessagesSource messagesSource;
+    private final ModelMapper modelMapper = new ModelMapper();
 
     @Override
     public List<Comment> findAllByPageableAndCriteria(Pageable pageable, CommentCriteria criteria) {

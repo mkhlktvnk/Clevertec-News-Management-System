@@ -39,9 +39,6 @@ class NewsServiceImplTest {
     @Mock
     private MessagesSource messagesSource;
 
-    @Mock
-    private ModelMapper modelMapper;
-
     @InjectMocks
     private NewsServiceImpl newsService;
 
@@ -103,7 +100,6 @@ class NewsServiceImplTest {
         newsService.updateNewsPartiallyById(ID, updateNews);
 
         verify(newsRepository).findById(ID);
-        verify(modelMapper).map(updateNews, newsFromDb);
         verify(newsRepository).save(newsFromDb);
     }
 
