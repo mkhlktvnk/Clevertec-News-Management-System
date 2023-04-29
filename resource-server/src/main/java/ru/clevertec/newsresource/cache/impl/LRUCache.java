@@ -2,46 +2,62 @@ package ru.clevertec.newsresource.cache.impl;
 
 import ru.clevertec.newsresource.cache.Cache;
 
-import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class LRUCache implements Cache<String, Object> {
-    private final int MAX_ENTRIES;
-    private final Map<String, Object> cache;
-    private final Map<String, LinkedList<String>> keys;
+    private final int capacity;
+    private final Map<String, Object> keyValueMap;
+    private final Set<String> keys;
+    private final ReentrantReadWriteLock lock;
 
     public LRUCache(Integer capacity) {
-        this.cache = new HashMap<>(capacity);
-        this.keys = new HashMap<>();
-        this.MAX_ENTRIES = capacity;
+        this.capacity = capacity;
+        this.keys = new HashSet<>();
+        this.keyValueMap = new ConcurrentHashMap<>(capacity);
+        this.lock = new ReentrantReadWriteLock();
     }
 
     @Override
     public void put(String key, String name, Object value) {
-        String cacheKey = name + ":" + key;
-        if (cache.containsKey(cacheKey)) {
-            keys.get(name).remove(key);
-        }
-        cache.put(cacheKey, value);
-        keys.putIfAbsent(name, new LinkedList<>());
-        keys.get(name).addFirst(key);
-        if (keys.get(name).size() > MAX_ENTRIES) {
-            String last = keys.get(name).removeLast();
-            cache.remove(name + ":" + last);
+        lock.writeLock().lock();
+        try {
+            String cacheKey = key + ":" + name;
+            if (this.capacity == 0) {
+                return;
+            }
+            if (keys.contains(cacheKey)) {
+                keys.remove(cacheKey);
+            } else if (keys.size() == capacity) {
+                String keyToEvict = keys.iterator().next();
+                keys.remove(keyToEvict);
+                keyValueMap.remove(keyToEvict);
+            }
+            keys.add(cacheKey);
+            keyValueMap.put(cacheKey, value);
+        } finally {
+            lock.writeLock().unlock();
         }
     }
 
     @Override
     public Optional<Object> get(String key, String name) {
-        String cacheKey = name + ":" + key;
-        Object value = cache.get(cacheKey);
-        if (value != null) {
-            keys.get(name).remove(key);
-            keys.get(name).addFirst(key);
+        lock.readLock().lock();
+        try {
+            String cacheKey = key + ":" + name;
+            if (!keyValueMap.containsKey(cacheKey)) {
+                return Optional.empty();
+            }
+            keys.remove(cacheKey);
+            keys.add(cacheKey);
+            return Optional.of(keyValueMap.get(cacheKey));
+        } finally {
+            lock.readLock().unlock();
         }
-        return Optional.ofNullable(value);
     }
 
 }
