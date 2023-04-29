@@ -2,6 +2,9 @@ package ru.clevertec.newsresource.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -45,6 +48,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Cacheable(value = "comment", key = "#commentId")
     public Comment findById(Long commentId) {
         return commentRepository.findById(commentId)
                 .orElseThrow(() -> new ResourceNotFoundException(
@@ -54,12 +58,14 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional
+    @CachePut(value = "comment", key = "#result.id")
     public Comment insertComment(Comment comment) {
         return commentRepository.save(comment);
     }
 
     @Override
     @Transactional
+    @CachePut(value = "comment", key = "#commentId")
     public void updateCommentPartiallyById(Long commentId, Comment updateComment) {
         Comment commentToUpdate = commentRepository.findById(commentId)
                 .orElseThrow(() -> new ResourceNotFoundException(
@@ -71,6 +77,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "comment", key = "#commentId")
     public void deleteCommentById(Long commentId) {
         Comment commentToDelete = commentRepository.findById(commentId)
                 .orElseThrow(() -> new ResourceNotFoundException(

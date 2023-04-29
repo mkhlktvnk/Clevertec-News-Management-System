@@ -2,6 +2,9 @@ package ru.clevertec.newsresource.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -34,6 +37,7 @@ public class NewsServiceImpl implements NewsService {
     }
 
     @Override
+    @Cacheable(value = "news", key = "#newsId")
     public News findNewsById(Long newsId) {
         return newsRepository.findById(newsId)
                 .orElseThrow(() -> new ResourceNotFoundException(
@@ -49,6 +53,7 @@ public class NewsServiceImpl implements NewsService {
 
     @Override
     @Transactional
+    @CachePut(value = "news", key = "#newsId")
     public void updateNewsPartiallyById(Long newsId, News updateNews) {
         News news = newsRepository.findById(newsId)
                 .orElseThrow(() -> new ResourceNotFoundException(
@@ -60,6 +65,7 @@ public class NewsServiceImpl implements NewsService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "news", key = "#newsId")
     public void deleteNewsById(Long newsId) {
         News newsToDelete = newsRepository.findById(newsId)
                 .orElseThrow(() -> new ResourceNotFoundException(
