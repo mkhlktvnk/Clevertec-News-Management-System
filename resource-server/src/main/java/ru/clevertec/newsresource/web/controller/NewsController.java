@@ -25,38 +25,38 @@ import ru.clevertec.newsresource.web.mapper.NewsMapper;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v0/news")
+@RequestMapping("/api/v0")
 @RequiredArgsConstructor
 public class NewsController {
     private final NewsService newsService;
     private final NewsMapper newsMapper = Mappers.getMapper(NewsMapper.class);
 
-    @GetMapping
+    @GetMapping("/news")
     public ResponseEntity<List<NewsDto>> findAllByPageableAndCriteria(
             @PageableDefault Pageable pageable, @Valid NewsCriteria criteria) {
         List<News> news = newsService.findAllByPageableAndCriteria(pageable, criteria);
         return ResponseEntity.ok(newsMapper.toDto(news));
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/news/{id}")
     public ResponseEntity<NewsDto> findNewsById(@PathVariable Long id) {
         News news = newsService.findNewsById(id);
         return ResponseEntity.ok(newsMapper.toDto(news));
     }
 
-    @PostMapping
+    @PostMapping("/news")
     public ResponseEntity<NewsDto> saveNews(@RequestBody NewsDto news) {
         News savedNews = newsService.saveNews(newsMapper.toEntity(news));
         return ResponseEntity.status(HttpStatus.CREATED).body(newsMapper.toDto(savedNews));
     }
 
-    @PatchMapping("/{id}")
+    @PatchMapping("/news/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateNewsPartiallyById(@PathVariable Long id, @RequestBody NewsDto updateNews) {
         newsService.updateNewsPartiallyById(id, newsMapper.toEntity(updateNews));
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/news/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteNewsById(@PathVariable Long id) {
         newsService.deleteNewsById(id);
