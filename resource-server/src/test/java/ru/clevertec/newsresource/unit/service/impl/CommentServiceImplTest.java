@@ -12,6 +12,7 @@ import org.springframework.data.jpa.domain.Specification;
 import ru.clevertec.newsresource.builder.impl.NewsTestBuilder;
 import ru.clevertec.newsresource.entity.News;
 import ru.clevertec.newsresource.repository.NewsRepository;
+import ru.clevertec.newsresource.service.message.key.NewsMessageKey;
 import ru.clevertec.newsresource.web.criteria.CommentCriteria;
 import ru.clevertec.newsresource.entity.Comment;
 import ru.clevertec.newsresource.repository.CommentRepository;
@@ -49,7 +50,7 @@ class CommentServiceImplTest {
     private CommentServiceImpl commentService;
 
     @Test
-    void findAllByPageableAndCriteriaShouldReturnExpectedCommentsAndCallRepository() {
+    void findAllByNewsIdAndPageableAndCriteriaShouldReturnExpectedCommentsAndCallRepository() {
         Pageable pageable = PageRequest.of(0, 3);
         CommentCriteria criteria = CommentCriteria.builder().build();
         News news = NewsTestBuilder.aNews().build();
@@ -69,6 +70,18 @@ class CommentServiceImplTest {
                 .findAllByNewsId(any(Long.class), any(Specification.class), any(Pageable.class));
         assertThat(actualComments).isEqualTo(expectedComments);
     }
+
+    @Test
+    void findAllByNewsIdAndPageableAndCriteriaShouldThrowResourceNotFoundException() {
+        Pageable pageable = PageRequest.of(0, 3);
+        CommentCriteria criteria = CommentCriteria.builder().build();
+        doReturn(Optional.empty()).when(newsRepository).findById(NEWS_ID);
+
+        assertThatThrownBy(() -> commentService.findAllByNewsIdAndPageableAndCriteria(NEWS_ID, pageable, criteria))
+                .isInstanceOf(ResourceNotFoundException.class)
+                .hasMessage(messagesSource.get(NewsMessageKey.NOT_FOUND_BY_ID, NEWS_ID));
+    }
+
 
     @Test
     void findCommentByIdShouldReturnExpectedCommentAndCallRepository() {
