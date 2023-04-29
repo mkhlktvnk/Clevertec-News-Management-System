@@ -1,5 +1,6 @@
 package ru.clevertec.newsresource.repository;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,5 +12,5 @@ import java.util.List;
 
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Long>, JpaSpecificationExecutor<Comment> {
-    List<Comment> findAllByNewsId(Long newsId, Specification<Comment> spec, Pageable pageable);
+    Page<Comment> findAll(Specification<Comment> specification, Pageable pageable);
 }
