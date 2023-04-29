@@ -12,5 +12,4 @@ import java.util.List;
 
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Long>, JpaSpecificationExecutor<Comment> {
-    Page<Comment> findAll(Specification<Comment> specification, Pageable pageable);
 }
