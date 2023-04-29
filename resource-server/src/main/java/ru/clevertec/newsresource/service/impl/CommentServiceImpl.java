@@ -11,9 +11,9 @@ import ru.clevertec.newsresource.repository.CommentRepository;
 import ru.clevertec.newsresource.repository.NewsRepository;
 import ru.clevertec.newsresource.service.CommentService;
 import ru.clevertec.newsresource.service.exception.ResourceNotFoundException;
-import ru.clevertec.newsresource.service.message.CommentMessageKey;
+import ru.clevertec.newsresource.service.message.key.CommentMessageKey;
 import ru.clevertec.newsresource.service.message.MessagesSource;
-import ru.clevertec.newsresource.service.message.NewsMessageKey;
+import ru.clevertec.newsresource.service.message.key.NewsMessageKey;
 import ru.clevertec.newsresource.specifications.CommentSpecifications;
 import ru.clevertec.newsresource.web.criteria.CommentCriteria;
 

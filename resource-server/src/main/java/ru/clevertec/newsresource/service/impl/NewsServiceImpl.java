@@ -12,7 +12,7 @@ import ru.clevertec.newsresource.repository.NewsRepository;
 import ru.clevertec.newsresource.service.NewsService;
 import ru.clevertec.newsresource.service.exception.ResourceNotFoundException;
 import ru.clevertec.newsresource.service.message.MessagesSource;
-import ru.clevertec.newsresource.service.message.NewsMessageKey;
+import ru.clevertec.newsresource.service.message.key.NewsMessageKey;
 import ru.clevertec.newsresource.specifications.NewsSpecifications;
 
 import java.util.List;
