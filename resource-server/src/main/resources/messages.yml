@@ -1,0 +1,7 @@
+comment:
+  not-found:
+    by-id: Error! Unable to find comment with id {0}.
+
+news:
+  not-found:
+    by-id: Error! Unable to find news with id {0}.
