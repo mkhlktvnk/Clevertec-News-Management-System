@@ -9,6 +9,9 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import ru.clevertec.newsresource.builder.impl.NewsTestBuilder;
+import ru.clevertec.newsresource.entity.News;
+import ru.clevertec.newsresource.repository.NewsRepository;
 import ru.clevertec.newsresource.web.criteria.CommentCriteria;
 import ru.clevertec.newsresource.entity.Comment;
 import ru.clevertec.newsresource.repository.CommentRepository;
@@ -31,9 +34,13 @@ import static org.mockito.Mockito.verify;
 class CommentServiceImplTest {
 
     private static final Long COMMENT_ID = 1L;
+    private static final Long NEWS_ID = 2L;
 
     @Mock
     private CommentRepository commentRepository;
+
+    @Mock
+    private NewsRepository newsRepository;
 
     @Mock
     private MessagesSource messagesSource;
@@ -45,17 +52,21 @@ class CommentServiceImplTest {
     void findAllByPageableAndCriteriaShouldReturnExpectedCommentsAndCallRepository() {
         Pageable pageable = PageRequest.of(0, 3);
         CommentCriteria criteria = CommentCriteria.builder().build();
+        News news = NewsTestBuilder.aNews().build();
         List<Comment> expectedComments = List.of(
                 CommentTestBuilder.aComment().build(),
                 CommentTestBuilder.aComment().build(),
                 CommentTestBuilder.aComment().build()
         );
-        doReturn(new PageImpl<>(expectedComments)).when(commentRepository)
-                .findAll(any(Specification.class), any(Pageable.class));
+        doReturn(Optional.of(news)).when(newsRepository).findById(NEWS_ID);
+        doReturn(expectedComments).when(commentRepository)
+                .findAllByNewsId(any(Long.class), any(Specification.class), any(Pageable.class));
 
-        List<Comment> actualComments = commentService.findAllByPageableAndCriteria(pageable, criteria);
+        List<Comment> actualComments =
+                commentService.findAllByNewsIdAndPageableAndCriteria(NEWS_ID, pageable, criteria);
 
-        verify(commentRepository).findAll(any(Specification.class), any(Pageable.class));
+        verify(commentRepository)
+                .findAllByNewsId(any(Long.class), any(Specification.class), any(Pageable.class));
         assertThat(actualComments).isEqualTo(expectedComments);
     }
 
