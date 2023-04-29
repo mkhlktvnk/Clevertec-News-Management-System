@@ -5,10 +5,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.After;
-import org.aspectj.lang.annotation.Around;
-import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Pointcut;
+import org.aspectj.lang.annotation.*;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -19,6 +16,7 @@ import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.stereotype.Component;
 import ru.clevertec.newsresource.cache.Cache;
+import ru.clevertec.newsresource.entity.Identifiable;
 
 import java.util.Optional;
 import java.util.stream.IntStream;
@@ -33,8 +31,8 @@ public class CacheAspect {
     private final SpelExpressionParser parser = new SpelExpressionParser();
 
     @SneakyThrows
-    @Around("cacheableMethods() && @annotation(cacheable)")
-    public Object cacheableAdvice(ProceedingJoinPoint proceedingJoinPoint, Cacheable cacheable) {
+    @Around("cacheableGetMethods() && @annotation(cacheable)")
+    public Object cacheableGetMethodsAdvice(ProceedingJoinPoint proceedingJoinPoint, Cacheable cacheable) {
         String key = getArgValue(cacheable.key(), proceedingJoinPoint).toString();
         String name = cacheable.value()[0];
 
@@ -50,21 +48,34 @@ public class CacheAspect {
     }
 
     @SneakyThrows
-    @After("cachePutMethods() && @annotation(cachePut)")
-    public void cachePutAdvice(JoinPoint joinPoint, CachePut cachePut) {
+    @AfterReturning(value = "cachePutSaveMethods() && @annotation(cachePut)", returning = "retVal")
+    public void cachePutSaveMethodsAdvice(Object retVal, CachePut cachePut) {
+        Identifiable<?> object = (Identifiable<?>) retVal;
+        cache.put(object.getId().toString(), cachePut.value()[0], retVal);
+    }
+
+    @SneakyThrows
+    @After("cachePutUpdateMethods() && @annotation(cachePut)")
+    public void cachePutUpdateMethodsAdvice(JoinPoint joinPoint, CachePut cachePut) {
         String key = getArgValue(cachePut.key(), joinPoint).toString();
         String name = cachePut.value()[0];
         Object objectToPut = joinPoint.getArgs()[1];
         cache.put(key, name, objectToPut);
     }
 
-    @Pointcut("execution(* ru.clevertec.newsresource.service.*.*(..)) &&" +
-            " @annotation(org.springframework.cache.annotation.CachePut)")
-    private void cachePutMethods() {}
-
-    @Pointcut("execution(* ru.clevertec.newsresource.service.*.*(..)) &&" +
+    @Pointcut(value = "execution(* ru.clevertec.newsresource.service.*.*(..)) &&" +
             " @annotation(org.springframework.cache.annotation.Cacheable)")
-    private void cacheableMethods() {}
+    private void cacheableGetMethods() {}
+
+    @Pointcut(value = "(execution(* ru.clevertec.newsresource.service.NewsService.saveNews(..)) || " +
+            "execution(* ru.clevertec.newsresource.service.CommentService.insertComment(..))) && " +
+            "@annotation(org.springframework.cache.annotation.CachePut)")
+    private void cachePutSaveMethods() {}
+
+    @Pointcut(value = "(execution(* ru.clevertec.newsresource.service.NewsService.updateNewsPartiallyById(..)) || " +
+            "execution(* ru.clevertec.newsresource.service.CommentService.updateCommentPartiallyById(..))) && " +
+            "@annotation(org.springframework.cache.annotation.CachePut)")
+    private void cachePutUpdateMethods() {}
 
     private Object getArgValue(String argKey, JoinPoint joinPoint) {
         Expression expression = parser.parseExpression(argKey);
