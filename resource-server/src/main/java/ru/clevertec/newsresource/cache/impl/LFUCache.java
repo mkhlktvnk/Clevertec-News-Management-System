@@ -6,73 +6,72 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class LFUCache implements Cache<String, Object> {
-    private final int MAX_ENTRIES;
-    private final Map<String, Object> cache;
-    private final Map<String, Integer> usageCount;
-    private final Map<Integer, LinkedHashSet<String>> frequencyList;
+    private final int capacity;
+    private final Map<String, Object> valueMap;
+    private final Map<String, Long> countMap;
+    private final Map<Long, LinkedHashSet<String>> frequencyMap;
+    private long minUsed = -1;
     private final ReentrantReadWriteLock lock;
-    private int minFrequency = 0;
 
     public LFUCache(int capacity) {
-        MAX_ENTRIES = capacity;
-        cache = new HashMap<>(capacity);
-        usageCount = new HashMap<>(capacity);
-        frequencyList = new HashMap<>();
-        frequencyList.put(1, new LinkedHashSet<>());
-        lock = new ReentrantReadWriteLock();
+        this.capacity = capacity;
+        this.valueMap = new ConcurrentHashMap<>();
+        this.countMap = new ConcurrentHashMap<>();
+        this.frequencyMap = new ConcurrentHashMap<>();
+        this.frequencyMap.put(1L, new LinkedHashSet<>());
+        this.lock = new ReentrantReadWriteLock();
     }
 
     @Override
     public void put(String key, String name, Object value) {
-        lock.writeLock().lock();
+        this.lock.writeLock().lock();
         try {
-            String cacheKey = key + ":" + name;
-            if (cache.containsKey(cacheKey)) {
-                cache.put(cacheKey, value);
-                get(key, name);
+            if (capacity == 0) {
                 return;
             }
-
-            if (cache.size() == MAX_ENTRIES) {
-                String evictionCandidate = frequencyList.get(minFrequency).iterator().next();
-                frequencyList.get(minFrequency).remove(evictionCandidate);
-                cache.remove(evictionCandidate);
-                usageCount.remove(evictionCandidate);
+            if (valueMap.containsKey(key)) {
+                valueMap.put(key, value);
+                return;
             }
-
-            cache.put(cacheKey, value);
-            usageCount.put(cacheKey, 1);
-            frequencyList.get(1).add(cacheKey);
-            minFrequency = 1;
+            if (valueMap.size() >= capacity) {
+                String keyToEvict = frequencyMap.get(minUsed).iterator().next();
+                frequencyMap.get(minUsed).remove(keyToEvict);
+                countMap.remove(keyToEvict);
+                valueMap.remove(keyToEvict);
+            }
+            minUsed = 1;
+            valueMap.put(key, value);
+            countMap.put(key, 1L);
+            frequencyMap.get(minUsed).add(key);
         } finally {
-            lock.writeLock().unlock();
+            this.lock.writeLock().unlock();
         }
     }
 
     @Override
     public Optional<Object> get(String key, String name) {
-        lock.readLock().lock();
+        this.lock.readLock().lock();
         try {
-            String cacheKey = key + ":" + name;
-            if (!cache.containsKey(cacheKey)) {
+            if (!valueMap.containsKey(key)) {
                 return Optional.empty();
             }
-
-            int count = usageCount.get(cacheKey);
-            usageCount.put(cacheKey, count + 1);
-            frequencyList.get(count).remove(cacheKey);
-            if (count == minFrequency && frequencyList.get(count).isEmpty()) {
-                minFrequency++;
-                frequencyList.remove(count);
+            long count = countMap.get(key);
+            countMap.put(key, count + 1);
+            frequencyMap.get(count).remove(key);
+            if (count == minUsed && frequencyMap.get(count).size() == 0) {
+                minUsed++;
             }
-            frequencyList.putIfAbsent(count + 1, new LinkedHashSet<>());
-            frequencyList.get(count + 1).add(cacheKey);
-            return Optional.ofNullable(cache.get(cacheKey));
+            if (!frequencyMap.containsKey(count + 1)) {
+                frequencyMap.put(count + 1, new LinkedHashSet<>());
+            }
+            frequencyMap.get(count + 1).add(key);
+            return Optional.of(valueMap.get(key));
         } finally {
-            lock.readLock().unlock();
+            this.lock.readLock().unlock();
         }
     }
 }
