@@ -31,33 +31,33 @@ public class CommentController {
     private final CommentService commentService;
     private final CommentMapper commentMapper = Mappers.getMapper(CommentMapper.class);
 
-    @GetMapping("news/{newsId}/comments")
+    @GetMapping("/news/{newsId}/comments")
     public ResponseEntity<List<CommentDto>> findAllByNewsIdAndPageableAndCriteria(
             @PathVariable Long newsId, @PageableDefault Pageable pageable, @Valid CommentCriteria criteria) {
         List<Comment> comments = commentService.findAllByNewsIdAndPageableAndCriteria(newsId, pageable, criteria);
         return ResponseEntity.ok(commentMapper.toDto(comments));
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/comments/{id}")
     public ResponseEntity<CommentDto> findCommentById(@PathVariable Long id) {
         Comment comment = commentService.findById(id);
         return ResponseEntity.ok(commentMapper.toDto(comment));
     }
 
-    @PostMapping
+    @PostMapping("/comments")
     public ResponseEntity<CommentDto> insertComment(@RequestBody CommentDto comment) {
         Comment insertedComment = commentService.insertComment(commentMapper.toEntity(comment));
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(commentMapper.toDto(insertedComment));
     }
 
-    @PatchMapping("/{id}")
+    @PatchMapping("/comments/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateCommentPartiallyById(@PathVariable Long id, @RequestBody CommentDto updateComment) {
         commentService.updateCommentPartiallyById(id, commentMapper.toEntity(updateComment));
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/comments/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteCommentById(@PathVariable Long id) {
         commentService.deleteCommentById(id);
