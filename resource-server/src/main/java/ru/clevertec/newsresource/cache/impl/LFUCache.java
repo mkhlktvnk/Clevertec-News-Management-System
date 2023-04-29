@@ -5,6 +5,7 @@ import ru.clevertec.newsresource.cache.Cache;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Optional;
 
 public class LFUCache implements Cache<String, Object> {
     private final int MAX_ENTRIES;
@@ -44,10 +45,10 @@ public class LFUCache implements Cache<String, Object> {
     }
 
     @Override
-    public Object get(String key, String name) {
+    public Optional<Object> get(String key, String name) {
         String cacheKey = key + ":" + name;
         if (!cache.containsKey(cacheKey)) {
-            return null;
+            return Optional.empty();
         }
 
         int count = usageCount.get(cacheKey);
@@ -59,7 +60,7 @@ public class LFUCache implements Cache<String, Object> {
         }
         frequencyList.putIfAbsent(count + 1, new LinkedHashSet<>());
         frequencyList.get(count + 1).add(cacheKey);
-        return cache.get(cacheKey);
+        return Optional.ofNullable(cache.get(cacheKey));
     }
 }
 

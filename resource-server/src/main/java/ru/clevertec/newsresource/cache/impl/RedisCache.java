@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import ru.clevertec.newsresource.cache.Cache;
 
+import java.util.Optional;
+
 @RequiredArgsConstructor
 public class RedisCache implements Cache<String, Object> {
     private final RedisTemplate<String, Object> redisTemplate;
@@ -14,8 +16,8 @@ public class RedisCache implements Cache<String, Object> {
     }
 
     @Override
-    public Object get(String key, String name) {
-        return redisTemplate.opsForValue().get(name + ":" + key);
+    public Optional<Object> get(String key, String name) {
+        return Optional.ofNullable(redisTemplate.opsForValue().get(name + ":" + key));
     }
 }
 

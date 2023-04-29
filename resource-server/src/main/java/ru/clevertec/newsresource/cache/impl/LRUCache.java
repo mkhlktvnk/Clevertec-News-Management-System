@@ -5,6 +5,7 @@ import ru.clevertec.newsresource.cache.Cache;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Optional;
 
 public class LRUCache implements Cache<String, Object> {
     private final int MAX_ENTRIES;
@@ -33,14 +34,14 @@ public class LRUCache implements Cache<String, Object> {
     }
 
     @Override
-    public Object get(String key, String name) {
+    public Optional<Object> get(String key, String name) {
         String cacheKey = name + ":" + key;
         Object value = cache.get(cacheKey);
         if (value != null) {
             keys.get(name).remove(key);
             keys.get(name).addFirst(key);
         }
-        return value;
+        return Optional.ofNullable(value);
     }
 
 }
