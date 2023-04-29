@@ -26,11 +26,12 @@ public class CommentServiceImpl implements CommentService {
     private final ModelMapper modelMapper = new ModelMapper();
 
     @Override
-    public List<Comment> findAllByPageableAndCriteria(Pageable pageable, CommentCriteria criteria) {
+    public List<Comment> findAllByNewsIdAndPageableAndCriteria(
+            Long newsId, Pageable pageable, CommentCriteria criteria) {
         Specification<Comment> searchSpecification =
                 Specification.where(CommentSpecifications.hasTextLike(criteria.getText()));
 
-        return commentRepository.findAll(searchSpecification, pageable).getContent();
+        return commentRepository.findAllByNewsId(newsId, searchSpecification, pageable);
     }
 
     @Override
