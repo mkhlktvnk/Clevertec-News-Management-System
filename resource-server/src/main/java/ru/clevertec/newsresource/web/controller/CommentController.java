@@ -2,6 +2,7 @@ package ru.clevertec.newsresource.web.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.mapstruct.factory.Mappers;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
@@ -18,6 +19,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import ru.clevertec.newsresource.web.criteria.CommentCriteria;
 import ru.clevertec.newsresource.entity.Comment;
 import ru.clevertec.newsresource.service.CommentService;
+import ru.clevertec.newsresource.web.dto.CommentDto;
+import ru.clevertec.newsresource.web.mapper.CommentMapper;
 
 import java.util.List;
 
@@ -26,30 +29,32 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CommentController {
     private final CommentService commentService;
+    private final CommentMapper commentMapper = Mappers.getMapper(CommentMapper.class);
 
     @GetMapping
-    public ResponseEntity<List<Comment>> findAllByPageableAndCriteria(
+    public ResponseEntity<List<CommentDto>> findAllByPageableAndCriteria(
             @PageableDefault Pageable pageable, @Valid CommentCriteria criteria) {
         List<Comment> comments = commentService.findAllByPageableAndCriteria(pageable, criteria);
-        return ResponseEntity.ok(comments);
+        return ResponseEntity.ok(commentMapper.toDto(comments));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Comment> findCommentById(@PathVariable Long id) {
+    public ResponseEntity<CommentDto> findCommentById(@PathVariable Long id) {
         Comment comment = commentService.findAllById(id);
-        return ResponseEntity.ok(comment);
+        return ResponseEntity.ok(commentMapper.toDto(comment));
     }
 
     @PostMapping
-    public ResponseEntity<Comment> insertComment(@RequestBody Comment comment) {
-        Comment insertedComment = commentService.insertComment(comment);
-        return ResponseEntity.status(HttpStatus.CREATED).body(insertedComment);
+    public ResponseEntity<CommentDto> insertComment(@RequestBody CommentDto comment) {
+        Comment insertedComment = commentService.insertComment(commentMapper.toEntity(comment));
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(commentMapper.toDto(insertedComment));
     }
 
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updateCommentPartiallyById(@PathVariable Long id, @RequestBody Comment updateComment) {
-        commentService.updateCommentPartiallyById(id, updateComment);
+    public void updateCommentPartiallyById(@PathVariable Long id, @RequestBody CommentDto updateComment) {
+        commentService.updateCommentPartiallyById(id, commentMapper.toEntity(updateComment));
     }
 
     @DeleteMapping("/{id}")
