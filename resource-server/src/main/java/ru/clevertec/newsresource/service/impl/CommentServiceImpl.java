@@ -7,6 +7,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.clevertec.newsresource.entity.Comment;
+import ru.clevertec.newsresource.entity.News;
 import ru.clevertec.newsresource.repository.CommentRepository;
 import ru.clevertec.newsresource.repository.NewsRepository;
 import ru.clevertec.newsresource.service.CommentService;
@@ -31,15 +32,16 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public List<Comment> findAllByNewsIdAndPageableAndCriteria(
             Long newsId, Pageable pageable, CommentCriteria criteria) {
-        newsRepository.findById(newsId)
+        News news = newsRepository.findById(newsId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         messagesSource.get(NewsMessageKey.NOT_FOUND_BY_ID, newsId)
                 ));
 
         Specification<Comment> searchSpecification =
-                Specification.where(CommentSpecifications.hasTextLike(criteria.getText()));
+                Specification.where(CommentSpecifications.hasTextLike(criteria.getText()))
+                        .and(CommentSpecifications.hasNewsId(news.getId()));
 
-        return commentRepository.findAllByNewsId(newsId, searchSpecification, pageable);
+        return commentRepository.findAll(searchSpecification, pageable).getContent();
     }
 
     @Override
