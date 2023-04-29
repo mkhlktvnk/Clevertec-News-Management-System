@@ -6,14 +6,16 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.clevertec.newsresource.web.criteria.CommentCriteria;
 import ru.clevertec.newsresource.entity.Comment;
 import ru.clevertec.newsresource.repository.CommentRepository;
+import ru.clevertec.newsresource.repository.NewsRepository;
 import ru.clevertec.newsresource.service.CommentService;
 import ru.clevertec.newsresource.service.exception.ResourceNotFoundException;
 import ru.clevertec.newsresource.service.message.CommentMessageKey;
 import ru.clevertec.newsresource.service.message.MessagesSource;
+import ru.clevertec.newsresource.service.message.NewsMessageKey;
 import ru.clevertec.newsresource.specifications.CommentSpecifications;
+import ru.clevertec.newsresource.web.criteria.CommentCriteria;
 
 import java.util.List;
 
@@ -22,12 +24,18 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
+    private final NewsRepository newsRepository;
     private final MessagesSource messagesSource;
     private final ModelMapper modelMapper = new ModelMapper();
 
     @Override
     public List<Comment> findAllByNewsIdAndPageableAndCriteria(
             Long newsId, Pageable pageable, CommentCriteria criteria) {
+        newsRepository.findById(newsId)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        messagesSource.get(NewsMessageKey.NOT_FOUND_BY_ID, newsId)
+                ));
+
         Specification<Comment> searchSpecification =
                 Specification.where(CommentSpecifications.hasTextLike(criteria.getText()));
 
