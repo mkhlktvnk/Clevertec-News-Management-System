@@ -6,7 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.clevertec.newsresource.criteria.NewsCriteria;
+import ru.clevertec.newsresource.web.criteria.NewsCriteria;
 import ru.clevertec.newsresource.entity.News;
 import ru.clevertec.newsresource.repository.NewsRepository;
 import ru.clevertec.newsresource.service.NewsService;

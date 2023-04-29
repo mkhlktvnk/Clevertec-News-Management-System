@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import ru.clevertec.newsresource.criteria.NewsCriteria;
+import ru.clevertec.newsresource.web.criteria.NewsCriteria;
 import ru.clevertec.newsresource.entity.News;
 import ru.clevertec.newsresource.service.NewsService;
 import ru.clevertec.newsresource.web.dto.NewsDto;

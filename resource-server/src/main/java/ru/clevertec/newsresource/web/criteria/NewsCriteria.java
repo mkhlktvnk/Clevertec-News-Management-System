@@ -1,4 +1,4 @@
-package ru.clevertec.newsresource.criteria;
+package ru.clevertec.newsresource.web.criteria;
 
 import jakarta.validation.constraints.Size;
 import lombok.*;

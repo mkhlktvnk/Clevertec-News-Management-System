@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import ru.clevertec.newsresource.criteria.CommentCriteria;
+import ru.clevertec.newsresource.web.criteria.CommentCriteria;
 import ru.clevertec.newsresource.entity.Comment;
 import ru.clevertec.newsresource.service.CommentService;
 

@@ -6,7 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.clevertec.newsresource.criteria.CommentCriteria;
+import ru.clevertec.newsresource.web.criteria.CommentCriteria;
 import ru.clevertec.newsresource.entity.Comment;
 import ru.clevertec.newsresource.repository.CommentRepository;
 import ru.clevertec.newsresource.service.CommentService;

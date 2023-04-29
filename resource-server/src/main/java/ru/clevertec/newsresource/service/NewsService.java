@@ -1,7 +1,7 @@
 package ru.clevertec.newsresource.service;
 
 import org.springframework.data.domain.Pageable;
-import ru.clevertec.newsresource.criteria.NewsCriteria;
+import ru.clevertec.newsresource.web.criteria.NewsCriteria;
 import ru.clevertec.newsresource.entity.News;
 
 import java.util.List;

@@ -1,7 +1,7 @@
 package ru.clevertec.newsresource.service;
 
 import org.springframework.data.domain.Pageable;
-import ru.clevertec.newsresource.criteria.CommentCriteria;
+import ru.clevertec.newsresource.web.criteria.CommentCriteria;
 import ru.clevertec.newsresource.entity.Comment;
 
 import java.util.List;
