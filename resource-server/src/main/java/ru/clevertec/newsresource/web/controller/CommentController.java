@@ -40,7 +40,7 @@ public class CommentController {
 
     @GetMapping("/{id}")
     public ResponseEntity<CommentDto> findCommentById(@PathVariable Long id) {
-        Comment comment = commentService.findAllById(id);
+        Comment comment = commentService.findById(id);
         return ResponseEntity.ok(commentMapper.toDto(comment));
     }
 

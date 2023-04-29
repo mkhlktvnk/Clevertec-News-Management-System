@@ -88,7 +88,7 @@ class CommentServiceImplTest {
         Comment expectedComment = CommentTestBuilder.aComment().build();
         doReturn(Optional.of(expectedComment)).when(commentRepository).findById(COMMENT_ID);
 
-        Comment actualComment = commentService.findAllById(COMMENT_ID);
+        Comment actualComment = commentService.findById(COMMENT_ID);
 
         verify(commentRepository).findById(COMMENT_ID);
         assertThat(actualComment).isEqualTo(expectedComment);
@@ -98,7 +98,7 @@ class CommentServiceImplTest {
     void findCommentByIdShouldThrowResourceNotFoundException() {
         doReturn(Optional.empty()).when(commentRepository).findById(COMMENT_ID);
 
-        assertThatThrownBy(() -> commentService.findAllById(COMMENT_ID))
+        assertThatThrownBy(() -> commentService.findById(COMMENT_ID))
                 .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessage(messagesSource.get(CommentMessageKey.COMMENT_NOT_FOUND_BY_ID, COMMENT_ID));
     }

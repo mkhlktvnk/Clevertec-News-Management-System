@@ -45,7 +45,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public Comment findAllById(Long commentId) {
+    public Comment findById(Long commentId) {
         return commentRepository.findById(commentId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         messagesSource.get(CommentMessageKey.COMMENT_NOT_FOUND_BY_ID, commentId)

@@ -9,7 +9,7 @@ import java.util.List;
 public interface CommentService {
     List<Comment> findAllByNewsIdAndPageableAndCriteria(Long newsId, Pageable pageable, CommentCriteria criteria);
 
-    Comment findAllById(Long commentId);
+    Comment findById(Long commentId);
 
     Comment insertComment(Comment comment);
 
