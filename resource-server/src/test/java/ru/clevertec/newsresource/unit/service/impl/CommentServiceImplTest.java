@@ -60,14 +60,14 @@ class CommentServiceImplTest {
                 CommentTestBuilder.aComment().build()
         );
         doReturn(Optional.of(news)).when(newsRepository).findById(NEWS_ID);
-        doReturn(expectedComments).when(commentRepository)
-                .findAllByNewsId(any(Long.class), any(Specification.class), any(Pageable.class));
+        doReturn(new PageImpl<>(expectedComments)).when(commentRepository)
+                .findAll(any(Specification.class), any(Pageable.class));
 
         List<Comment> actualComments =
                 commentService.findAllByNewsIdAndPageableAndCriteria(NEWS_ID, pageable, criteria);
 
         verify(commentRepository)
-                .findAllByNewsId(any(Long.class), any(Specification.class), any(Pageable.class));
+                .findAll(any(Specification.class), any(Pageable.class));
         assertThat(actualComments).isEqualTo(expectedComments);
     }
 
