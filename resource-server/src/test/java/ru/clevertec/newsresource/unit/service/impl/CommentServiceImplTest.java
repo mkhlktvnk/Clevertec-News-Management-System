@@ -9,18 +9,17 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import ru.clevertec.newsresource.builder.impl.CommentTestBuilder;
 import ru.clevertec.newsresource.builder.impl.NewsTestBuilder;
-import ru.clevertec.newsresource.entity.News;
-import ru.clevertec.newsresource.repository.NewsRepository;
-import ru.clevertec.newsresource.service.message.key.NewsMessageKey;
-import ru.clevertec.newsresource.web.criteria.CommentCriteria;
 import ru.clevertec.newsresource.entity.Comment;
+import ru.clevertec.newsresource.entity.News;
 import ru.clevertec.newsresource.repository.CommentRepository;
+import ru.clevertec.newsresource.repository.NewsRepository;
 import ru.clevertec.newsresource.service.exception.ResourceNotFoundException;
 import ru.clevertec.newsresource.service.impl.CommentServiceImpl;
 import ru.clevertec.newsresource.service.message.MessagesSource;
 import ru.clevertec.newsresource.service.message.key.CommentMessageKey;
-import ru.clevertec.newsresource.builder.impl.CommentTestBuilder;
+import ru.clevertec.newsresource.service.message.key.NewsMessageKey;
 
 import java.util.List;
 import java.util.Optional;
@@ -36,6 +35,7 @@ class CommentServiceImplTest {
 
     private static final Long COMMENT_ID = 1L;
     private static final Long NEWS_ID = 2L;
+    private static final String QUERY = "I'm agree with this";
 
     @Mock
     private CommentRepository commentRepository;
@@ -50,9 +50,8 @@ class CommentServiceImplTest {
     private CommentServiceImpl commentService;
 
     @Test
-    void findAllByNewsIdAndPageableAndCriteriaShouldReturnExpectedCommentsAndCallRepository() {
+    void findAllByNewsIdAndPageableAndQueryMatchShouldReturnExpectedCommentsAndCallRepository() {
         Pageable pageable = PageRequest.of(0, 3);
-        CommentCriteria criteria = CommentCriteria.builder().build();
         News news = NewsTestBuilder.aNews().build();
         List<Comment> expectedComments = List.of(
                 CommentTestBuilder.aComment().build(),
@@ -64,7 +63,7 @@ class CommentServiceImplTest {
                 .findAll(any(Specification.class), any(Pageable.class));
 
         List<Comment> actualComments =
-                commentService.findAllByNewsIdAndPageableAndCriteria(NEWS_ID, pageable, criteria);
+                commentService.findAllByNewsIdAndPageableAndQueryMatch(NEWS_ID, pageable, QUERY);
 
         verify(commentRepository)
                 .findAll(any(Specification.class), any(Pageable.class));
@@ -72,16 +71,15 @@ class CommentServiceImplTest {
     }
 
     @Test
-    void findAllByNewsIdAndPageableAndCriteriaShouldThrowResourceNotFoundException() {
+    void findAllByNewsIdAndPageableAndQueryMatchShouldThrowResourceNotFoundException() {
         Pageable pageable = PageRequest.of(0, 3);
-        CommentCriteria criteria = CommentCriteria.builder().build();
         doReturn(Optional.empty()).when(newsRepository).findById(NEWS_ID);
 
-        assertThatThrownBy(() -> commentService.findAllByNewsIdAndPageableAndCriteria(NEWS_ID, pageable, criteria))
-                .isInstanceOf(ResourceNotFoundException.class)
+        assertThatThrownBy(() ->
+                commentService.findAllByNewsIdAndPageableAndQueryMatch(NEWS_ID, pageable, QUERY)
+        ).isInstanceOf(ResourceNotFoundException.class)
                 .hasMessage(messagesSource.get(NewsMessageKey.NOT_FOUND_BY_ID, NEWS_ID));
     }
-
 
     @Test
     void findCommentByIdShouldReturnExpectedCommentAndCallRepository() {

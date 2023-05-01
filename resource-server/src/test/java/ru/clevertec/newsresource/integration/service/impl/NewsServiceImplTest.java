@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import ru.clevertec.newsresource.builder.impl.NewsCriteriaTestBuilder;
 import ru.clevertec.newsresource.builder.impl.NewsTestBuilder;
 import ru.clevertec.newsresource.entity.News;
 import ru.clevertec.newsresource.integration.BaseIntegrationTest;
@@ -13,7 +12,6 @@ import ru.clevertec.newsresource.service.NewsService;
 import ru.clevertec.newsresource.service.exception.ResourceNotFoundException;
 import ru.clevertec.newsresource.service.message.MessagesSource;
 import ru.clevertec.newsresource.service.message.key.NewsMessageKey;
-import ru.clevertec.newsresource.web.criteria.NewsCriteria;
 
 import java.util.List;
 
@@ -25,6 +23,10 @@ class NewsServiceImplTest extends BaseIntegrationTest {
 
     public static final Long INCORRECT_NEWS_ID = 30L;
 
+    public static final String CORRECT_QUERY = "SpaceX";
+
+    public static final String INCORRECT_QUERY = "Query that will not find anything";
+
     @Autowired
     private NewsService newsService;
 
@@ -35,25 +37,19 @@ class NewsServiceImplTest extends BaseIntegrationTest {
     private EntityManager entityManager;
 
     @Test
-    void findAllByPageableAndCriteriaShouldReturnExpectedCountOfNews() {
+    void findAllByPageableAndQueryMatchShouldReturnExpectedCountOfNews() {
         Pageable pageable = PageRequest.of(0, 1);
-        NewsCriteria criteria = NewsCriteriaTestBuilder.aNewsCriteria()
-                .withTitle("New research shows benefits of meditation")
-                .build();
 
-        List<News> news = newsService.findAllByPageableAndCriteria(pageable, criteria);
+        List<News> news = newsService.findAllByPageableAndQueryMatch(pageable, CORRECT_QUERY);
 
         assertThat(news.size()).isEqualTo(1);
     }
 
     @Test
-    void findAllByPageableAndCriteriaShouldReturnEmptyList() {
+    void findAllByPageableAndQueryMatchShouldReturnEmptyList() {
         Pageable pageable = PageRequest.of(0, 1);
-        NewsCriteria criteria = NewsCriteriaTestBuilder.aNewsCriteria()
-                .withTitle("Non-existent title")
-                .build();
 
-        List<News> news = newsService.findAllByPageableAndCriteria(pageable, criteria);
+        List<News> news = newsService.findAllByPageableAndQueryMatch(pageable, INCORRECT_QUERY);
 
         assertThat(news.size()).isEqualTo(0);
     }

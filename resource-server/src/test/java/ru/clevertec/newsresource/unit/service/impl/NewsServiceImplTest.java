@@ -10,7 +10,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import ru.clevertec.newsresource.builder.impl.NewsTestBuilder;
-import ru.clevertec.newsresource.web.criteria.NewsCriteria;
 import ru.clevertec.newsresource.entity.News;
 import ru.clevertec.newsresource.repository.NewsRepository;
 import ru.clevertec.newsresource.service.exception.ResourceNotFoundException;
@@ -32,6 +31,8 @@ class NewsServiceImplTest {
 
     private static final Long ID = 1L;
 
+    private static final String QUERY = "Interesting thing happened this night";
+
     @Mock
     private NewsRepository newsRepository;
 
@@ -42,9 +43,8 @@ class NewsServiceImplTest {
     private NewsServiceImpl newsService;
 
     @Test
-    void findAllByPageableAndCriteriaShouldReturnExpectedNewsAndCallRepository() {
+    void findAllByPageableAndQueryMatchShouldReturnExpectedNewsAndCallRepository() {
         Pageable pageable = PageRequest.of(0, 3);
-        NewsCriteria criteria = NewsCriteria.builder().build();
         List<News> expectedNews = List.of(
                 NewsTestBuilder.aNews().build(),
                 NewsTestBuilder.aNews().build(),
@@ -53,7 +53,7 @@ class NewsServiceImplTest {
         doReturn(new PageImpl<>(expectedNews)).when(newsRepository)
                 .findAll(any(Specification.class), any(Pageable.class));
 
-        List<News> actualNews = newsService.findAllByPageableAndCriteria(pageable, criteria);
+        List<News> actualNews = newsService.findAllByPageableAndQueryMatch(pageable, QUERY);
 
         verify(newsRepository).findAll(any(Specification.class), any(Pageable.class));
         assertThat(actualNews).isEqualTo(expectedNews);

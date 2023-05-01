@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import ru.clevertec.newsresource.builder.impl.CommentCriteriaTestBuilder;
 import ru.clevertec.newsresource.builder.impl.CommentTestBuilder;
 import ru.clevertec.newsresource.entity.Comment;
 import ru.clevertec.newsresource.integration.BaseIntegrationTest;
@@ -14,7 +13,6 @@ import ru.clevertec.newsresource.service.exception.ResourceNotFoundException;
 import ru.clevertec.newsresource.service.message.MessagesSource;
 import ru.clevertec.newsresource.service.message.key.CommentMessageKey;
 import ru.clevertec.newsresource.service.message.key.NewsMessageKey;
-import ru.clevertec.newsresource.web.criteria.CommentCriteria;
 
 import java.util.List;
 
@@ -41,26 +39,23 @@ class CommentServiceImplTest extends BaseIntegrationTest {
     private EntityManager entityManager;
 
     @Test
-    void findAllByNewsIdAndPageableAndCriteriaShouldReturnExpectedCountOfComments() {
+    void findAllByNewsIdAndPageableAndQueryMatchShouldReturnExpectedCountOfComments() {
         Pageable pageable = PageRequest.of(0, 1);
-        CommentCriteria criteria = CommentCriteriaTestBuilder.aCommentCriteria()
-                .withUsername("johndoe")
-                .withText("great news!")
-                .build();
+        String query = "I'm";
 
         List<Comment> comments =
-                commentService.findAllByNewsIdAndPageableAndCriteria(CORRECT_NEWS_ID, pageable, criteria);
+                commentService.findAllByNewsIdAndPageableAndQueryMatch(CORRECT_NEWS_ID, pageable, query);
 
         assertThat(comments.size()).isEqualTo(1);
     }
 
     @Test
-    void findAllByNewsIdAndPageableAndCriteriaShouldThrowResourceNotFoundException() {
+    void findAllByNewsIdAndPageableAndQueryMatchShouldThrowResourceNotFoundException() {
         Pageable pageable = PageRequest.of(0, 1);
-        CommentCriteria criteria = CommentCriteriaTestBuilder.aCommentCriteria().build();
+        String query = "I'm";
 
         assertThatThrownBy(() -> commentService
-                .findAllByNewsIdAndPageableAndCriteria(INCORRECT_NEWS_ID, pageable, criteria))
+                .findAllByNewsIdAndPageableAndQueryMatch(INCORRECT_NEWS_ID, pageable, query))
                 .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessage(messagesSource.get(NewsMessageKey.NOT_FOUND_BY_ID, INCORRECT_NEWS_ID));
     }
