@@ -26,14 +26,15 @@ public class LFUCache implements Cache<String, Object> {
     }
 
     @Override
-    public void put(String key, String name, Object value) {
+    public void put(String key, String prefix, Object value) {
         this.lock.writeLock().lock();
         try {
+            String cacheKey = prefix + ":" + key;
             if (capacity == 0) {
                 return;
             }
-            if (valueMap.containsKey(key)) {
-                valueMap.put(key, value);
+            if (valueMap.containsKey(cacheKey)) {
+                valueMap.put(cacheKey, value);
                 return;
             }
             if (valueMap.size() >= capacity) {
@@ -43,52 +44,54 @@ public class LFUCache implements Cache<String, Object> {
                 valueMap.remove(keyToEvict);
             }
             minUsed = 1;
-            valueMap.put(key, value);
-            countMap.put(key, 1L);
-            frequencyMap.get(minUsed).add(key);
+            valueMap.put(cacheKey, value);
+            countMap.put(cacheKey, 1L);
+            frequencyMap.get(minUsed).add(cacheKey);
         } finally {
             this.lock.writeLock().unlock();
         }
     }
 
     @Override
-    public Optional<Object> get(String key, String name) {
+    public Optional<Object> get(String key, String prefix) {
         this.lock.readLock().lock();
         try {
-            if (!valueMap.containsKey(key)) {
+            String cacheKey = prefix + ":" + key;
+            if (!valueMap.containsKey(cacheKey)) {
                 return Optional.empty();
             }
-            long count = countMap.get(key);
-            countMap.put(key, count + 1);
-            frequencyMap.get(count).remove(key);
+            long count = countMap.get(cacheKey);
+            countMap.put(cacheKey, count + 1);
+            frequencyMap.get(count).remove(cacheKey);
             if (count == minUsed && frequencyMap.get(count).size() == 0) {
                 minUsed++;
             }
             if (!frequencyMap.containsKey(count + 1)) {
                 frequencyMap.put(count + 1, new LinkedHashSet<>());
             }
-            frequencyMap.get(count + 1).add(key);
-            return Optional.of(valueMap.get(key));
+            frequencyMap.get(count + 1).add(cacheKey);
+            return Optional.of(valueMap.get(cacheKey));
         } finally {
             this.lock.readLock().unlock();
         }
     }
 
     @Override
-    public void evict(String key, String name) {
+    public void evict(String key, String prefix) {
         this.lock.writeLock().lock();
         try {
-            if (!valueMap.containsKey(key)) {
+            String cacheKey = prefix + ":" + key;
+            if (!valueMap.containsKey(cacheKey)) {
                 return;
             }
-            long count = countMap.get(key);
-            frequencyMap.get(count).remove(key);
+            long count = countMap.get(cacheKey);
+            frequencyMap.get(count).remove(cacheKey);
             if (count == minUsed && frequencyMap.get(minUsed).size() == 0) {
-                frequencyMap.remove(countMap.get(key));
+                frequencyMap.remove(countMap.get(cacheKey));
                 minUsed = frequencyMap.keySet().stream().min(Long::compare).get();
             }
-            countMap.remove(key);
-            valueMap.remove(key);
+            countMap.remove(cacheKey);
+            valueMap.remove(cacheKey);
         } finally {
             this.lock.writeLock().unlock();
         }
