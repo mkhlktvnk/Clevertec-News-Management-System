@@ -8,7 +8,7 @@ import ru.clevertec.newsresource.web.criteria.CommentCriteria;
 
 @With
 @AllArgsConstructor
-@NoArgsConstructor(staticName = "aComment")
+@NoArgsConstructor(staticName = "aCommentCriteria")
 public class CommentCriteriaTestBuilder implements TestBuilder<CommentCriteria> {
     private String text = "";
     private String username = "";
