@@ -44,9 +44,10 @@ public class CommentController {
         return ResponseEntity.ok(commentMapper.toDto(comment));
     }
 
-    @PostMapping("/comments")
-    public ResponseEntity<CommentDto> insertComment(@RequestBody CommentDto comment) {
-        Comment insertedComment = commentService.insertComment(commentMapper.toEntity(comment));
+    @PostMapping("/news/{newsId}/comments")
+    public ResponseEntity<CommentDto> addCommentToNews(
+            @PathVariable Long newsId, @RequestBody CommentDto comment) {
+        Comment insertedComment = commentService.addCommentToNews(newsId, commentMapper.toEntity(comment));
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(commentMapper.toDto(insertedComment));
     }

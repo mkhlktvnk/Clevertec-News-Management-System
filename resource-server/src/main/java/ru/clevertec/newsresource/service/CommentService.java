@@ -11,7 +11,7 @@ public interface CommentService {
 
     Comment findById(Long commentId);
 
-    Comment insertComment(Comment comment);
+    Comment addCommentToNews(Long newsId, Comment comment);
 
     void updateCommentPartiallyById(Long commentId, Comment updateComment);
 

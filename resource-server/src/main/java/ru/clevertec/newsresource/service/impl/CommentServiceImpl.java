@@ -60,7 +60,12 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional
     @CachePut(value = "comment", key = "#result.id")
-    public Comment insertComment(Comment comment) {
+    public Comment addCommentToNews(Long newsId, Comment comment) {
+        News news = newsRepository.findById(newsId)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        messagesSource.get(NewsMessageKey.NOT_FOUND_BY_ID, newsId)
+                ));
+        comment.setNews(news);
         return commentRepository.save(comment);
     }
 

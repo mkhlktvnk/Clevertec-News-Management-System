@@ -81,7 +81,7 @@ public class CacheAspect {
     private void cacheableGetMethods() {}
 
     @Pointcut(value = "(execution(* ru.clevertec.newsresource.service.NewsService.saveNews(..)) || " +
-            "execution(* ru.clevertec.newsresource.service.CommentService.insertComment(..))) && " +
+            "execution(* ru.clevertec.newsresource.service.CommentService.addCommentToNews(..))) && " +
             "@annotation(org.springframework.cache.annotation.CachePut)")
     private void cachePutSaveMethods() {}
 
