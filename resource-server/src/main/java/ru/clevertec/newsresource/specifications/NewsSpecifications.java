@@ -15,7 +15,7 @@ public class NewsSpecifications {
                return criteriaBuilder.isTrue(criteriaBuilder.literal(true));
            }
 
-           String pattern = "%" + searchQuery + "%";
+           String pattern = "%" + searchQuery.toLowerCase() + "%";
            Predicate titlePredicate = criteriaBuilder.like(criteriaBuilder.lower(root.get("title")), pattern);
            Predicate textPredicate = criteriaBuilder.like(criteriaBuilder.lower(root.get("text")), pattern);
 
