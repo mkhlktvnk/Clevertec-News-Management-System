@@ -28,7 +28,7 @@ public class NewsTestBuilder implements TestBuilder<News> {
         news.setId(id);
         news.setTime(time);
         news.setTitle(title);
-        news.setTitle(text);
+        news.setText(text);
         news.setComments(comments);
 
         return news;
