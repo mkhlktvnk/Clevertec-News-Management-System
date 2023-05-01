@@ -47,6 +47,7 @@ public class NewsServiceImpl implements NewsService {
 
     @Override
     @Transactional
+    @CachePut(value = "news", key = "#result.id")
     public News saveNews(News news) {
         return newsRepository.save(news);
     }
