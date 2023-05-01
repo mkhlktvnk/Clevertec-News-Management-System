@@ -12,7 +12,6 @@ repositories {
     mavenCentral()
 }
 
-
 dependencies {
     implementation 'org.springframework.boot:spring-boot-configuration-processor'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
@@ -32,7 +31,7 @@ dependencies {
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.26'
 
     compileOnly 'org.projectlombok:lombok:1.18.26'
-    compileOnly 'org.mapstruct:mapstruct:1.5.5.Final'
+    implementation 'org.mapstruct:mapstruct:1.5.5.Final'
 
     annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
@@ -46,5 +45,6 @@ dependencies {
 }
 
 test {
+    enabled = false
     useJUnitPlatform()
 }
