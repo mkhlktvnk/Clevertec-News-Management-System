@@ -41,8 +41,9 @@ public class CommentServiceImpl implements CommentService {
                 ));
 
         Specification<Comment> searchSpecification =
-                Specification.where(CommentSpecifications.hasTextLike(criteria.getText()))
-                        .and(CommentSpecifications.hasNewsId(news.getId()));
+                Specification.where(CommentSpecifications.hasNewsId(news.getId()))
+                        .and(CommentSpecifications.hasTextLike(criteria.getText()))
+                        .and(CommentSpecifications.hasUsernameLike(criteria.getUsername()));
 
         return commentRepository.findAll(searchSpecification, pageable).getContent();
     }
