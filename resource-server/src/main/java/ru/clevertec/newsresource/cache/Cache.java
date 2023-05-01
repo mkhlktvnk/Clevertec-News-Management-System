@@ -6,4 +6,6 @@ public interface Cache<K, V> {
     void put(K key, String name, V value);
 
     Optional<V> get(K key, String name);
+
+    void evict(K key, String name);
 }

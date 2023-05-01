@@ -2,7 +2,6 @@ package ru.clevertec.newsresource.cache.impl;
 
 import ru.clevertec.newsresource.cache.Cache;
 
-import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Optional;
@@ -72,6 +71,26 @@ public class LFUCache implements Cache<String, Object> {
             return Optional.of(valueMap.get(key));
         } finally {
             this.lock.readLock().unlock();
+        }
+    }
+
+    @Override
+    public void evict(String key, String name) {
+        this.lock.writeLock().lock();
+        try {
+            if (!valueMap.containsKey(key)) {
+                return;
+            }
+            long count = countMap.get(key);
+            frequencyMap.get(count).remove(key);
+            if (count == minUsed && frequencyMap.get(minUsed).size() == 0) {
+                frequencyMap.remove(countMap.get(key));
+                minUsed = frequencyMap.keySet().stream().min(Long::compare).get();
+            }
+            countMap.remove(key);
+            valueMap.remove(key);
+        } finally {
+            this.lock.writeLock().unlock();
         }
     }
 }

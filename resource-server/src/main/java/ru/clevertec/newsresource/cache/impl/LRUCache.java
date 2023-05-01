@@ -60,4 +60,19 @@ public class LRUCache implements Cache<String, Object> {
         }
     }
 
+    @Override
+    public void evict(String key, String name) {
+        lock.writeLock().lock();
+        try {
+            String cacheKey = key + ":" + name;
+            if (!keys.contains(cacheKey)) {
+                return;
+            }
+            keys.remove(cacheKey);
+            keyValueMap.remove(cacheKey);
+        } finally {
+            lock.writeLock().unlock();
+        }
+    }
+
 }
