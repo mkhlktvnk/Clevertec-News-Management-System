@@ -12,7 +12,8 @@ public class NewsSpecifications {
             if (title == null) {
                 return criteriaBuilder.isTrue(criteriaBuilder.literal(true));
             }
-            return criteriaBuilder.like(root.get("title"), "%" + title + "%");
+            return criteriaBuilder.like(criteriaBuilder.lower(root.get("title")),
+                    "%" + title.toLowerCase() + "%");
         });
     }
 
@@ -21,7 +22,8 @@ public class NewsSpecifications {
             if (text == null) {
                 return criteriaBuilder.isTrue(criteriaBuilder.literal(true));
             }
-            return criteriaBuilder.like(root.get("text"), "%" + text + "%");
+            return criteriaBuilder.like(criteriaBuilder.lower(root.get("text")),
+                    "%" + text.toLowerCase() + "%");
         });
     }
 

@@ -21,7 +21,18 @@ public class CommentSpecifications {
             if (text == null) {
                 return criteriaBuilder.isTrue(criteriaBuilder.literal(true));
             }
-            return criteriaBuilder.like(root.get("text"), "%" + text + "%");
+            return criteriaBuilder.like(criteriaBuilder.lower(root.get("text")),
+                    "%" + text.toLowerCase() + "%");
+        });
+    }
+
+    public Specification<Comment> hasUsernameLike(String username) {
+        return ((root, query, criteriaBuilder) -> {
+            if (username == null) {
+                return criteriaBuilder.isTrue(criteriaBuilder.literal(true));
+            }
+            return criteriaBuilder.like(criteriaBuilder.lower(root.get("username")),
+                    "%" + username.toLowerCase() + "%");
         });
     }
 
