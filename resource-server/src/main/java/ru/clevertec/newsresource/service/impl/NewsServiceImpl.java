@@ -32,7 +32,7 @@ public class NewsServiceImpl implements NewsService {
     @Override
     public List<News> findAllByPageableAndCriteria(Pageable pageable, NewsCriteria criteria) {
         Specification<News> searchSpecification = Specification.where(NewsSpecifications.hasTitleLike(criteria.getTitle()))
-                .and(NewsSpecifications.hasTextLike(criteria.getTitle()));
+                .and(NewsSpecifications.hasTextLike(criteria.getText()));
 
         return newsRepository.findAll(searchSpecification, pageable).getContent();
     }
