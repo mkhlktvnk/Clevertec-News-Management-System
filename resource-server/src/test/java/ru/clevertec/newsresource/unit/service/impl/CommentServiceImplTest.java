@@ -104,14 +104,26 @@ class CommentServiceImplTest {
     }
 
     @Test
-    void insertCommentShouldReturnSavedCommentAndCallRepository() {
+    void addCommentToNewsShouldReturnSavedCommentAndCallRepository() {
         Comment expectedComment = CommentTestBuilder.aComment().build();
+        News news = NewsTestBuilder.aNews().build();
+        doReturn(Optional.of(news)).when(newsRepository).findById(NEWS_ID);
         doReturn(expectedComment).when(commentRepository).save(expectedComment);
 
-        Comment actualComment = commentService.insertComment(expectedComment);
+        Comment actualComment = commentService.addCommentToNews(NEWS_ID, expectedComment);
 
         verify(commentRepository).save(expectedComment);
         assertThat(actualComment).isEqualTo(expectedComment);
+    }
+
+    @Test
+    void addCommentToNewsShouldThrowResourceNotFoundException() {
+        Comment comment = CommentTestBuilder.aComment().build();
+        doReturn(Optional.empty()).when(newsRepository).findById(NEWS_ID);
+
+        assertThatThrownBy(() -> commentService.addCommentToNews(NEWS_ID, comment))
+                .isInstanceOf(ResourceNotFoundException.class)
+                .hasMessage(messagesSource.get(NewsMessageKey.NOT_FOUND_BY_ID, NEWS_ID));
     }
 
     @Test
