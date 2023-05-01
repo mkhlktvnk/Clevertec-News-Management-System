@@ -1,4 +1,4 @@
-package ru.clevertec.newsresource.web.handler;
+package ru.clevertec.newsresource.web.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
