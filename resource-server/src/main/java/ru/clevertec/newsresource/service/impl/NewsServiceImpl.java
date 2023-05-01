@@ -1,7 +1,7 @@
 package ru.clevertec.newsresource.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
+import org.mapstruct.factory.Mappers;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -9,7 +9,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.clevertec.newsresource.web.criteria.NewsCriteria;
 import ru.clevertec.newsresource.entity.News;
 import ru.clevertec.newsresource.repository.NewsRepository;
 import ru.clevertec.newsresource.service.NewsService;
@@ -17,6 +16,8 @@ import ru.clevertec.newsresource.service.exception.ResourceNotFoundException;
 import ru.clevertec.newsresource.service.message.MessagesSource;
 import ru.clevertec.newsresource.service.message.key.NewsMessageKey;
 import ru.clevertec.newsresource.specifications.NewsSpecifications;
+import ru.clevertec.newsresource.web.criteria.NewsCriteria;
+import ru.clevertec.newsresource.web.mapper.NewsMapper;
 
 import java.util.List;
 
@@ -26,7 +27,7 @@ import java.util.List;
 public class NewsServiceImpl implements NewsService {
     private final NewsRepository newsRepository;
     private final MessagesSource messagesSource;
-    private final ModelMapper modelMapper = new ModelMapper();
+    private final NewsMapper newsMapper = Mappers.getMapper(NewsMapper.class);
 
     @Override
     public List<News> findAllByPageableAndCriteria(Pageable pageable, NewsCriteria criteria) {
@@ -56,12 +57,12 @@ public class NewsServiceImpl implements NewsService {
     @Transactional
     @CachePut(value = "news", key = "#newsId")
     public void updateNewsPartiallyById(Long newsId, News updateNews) {
-        News news = newsRepository.findById(newsId)
+        News newsToUpdate = newsRepository.findById(newsId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         messagesSource.get(NewsMessageKey.NOT_FOUND_BY_ID, newsId)
                 ));
-        modelMapper.map(updateNews, news);
-        newsRepository.save(news);
+        newsMapper.mapNotNullFields(newsToUpdate, updateNews);
+        newsRepository.save(newsToUpdate);
     }
 
     @Override
