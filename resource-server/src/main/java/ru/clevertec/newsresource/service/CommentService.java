@@ -6,7 +6,7 @@ import ru.clevertec.newsresource.entity.Comment;
 import java.util.List;
 
 public interface CommentService {
-    List<Comment> findAllByNewsIdAndPageableAndMatchWithQuery(Long newsId, Pageable pageable, String query);
+    List<Comment> findAllByNewsIdAndPageableAndQueryMatch(Long newsId, Pageable pageable, String query);
 
     Comment findById(Long commentId);
 

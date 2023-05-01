@@ -96,7 +96,7 @@ public class CommentController {
     public ResponseEntity<List<CommentDto>> findAllByNewsIdAndPageableAndMatchWithQuery(
             @PathVariable Long newsId, @PageableDefault Pageable pageable,
             @RequestParam(required = false) String query) {
-        List<Comment> comments = commentService.findAllByNewsIdAndPageableAndMatchWithQuery(newsId, pageable, query);
+        List<Comment> comments = commentService.findAllByNewsIdAndPageableAndQueryMatch(newsId, pageable, query);
         return ResponseEntity.ok(commentMapper.toDto(comments));
     }
 

@@ -36,7 +36,7 @@ public class CommentServiceImpl implements CommentService {
     private final CommentMapper commentMapper = Mappers.getMapper(CommentMapper.class);
 
     @Override
-    public List<Comment> findAllByNewsIdAndPageableAndMatchWithQuery(
+    public List<Comment> findAllByNewsIdAndPageableAndQueryMatch(
             Long newsId, Pageable pageable, String query) {
         News news = newsRepository.findById(newsId)
                 .orElseThrow(() -> new ResourceNotFoundException(
