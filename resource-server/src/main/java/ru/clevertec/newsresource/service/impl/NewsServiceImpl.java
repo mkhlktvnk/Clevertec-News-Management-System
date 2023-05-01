@@ -16,7 +16,6 @@ import ru.clevertec.newsresource.service.exception.ResourceNotFoundException;
 import ru.clevertec.newsresource.service.message.MessagesSource;
 import ru.clevertec.newsresource.service.message.key.NewsMessageKey;
 import ru.clevertec.newsresource.specifications.NewsSpecifications;
-import ru.clevertec.newsresource.web.criteria.NewsCriteria;
 import ru.clevertec.newsresource.web.mapper.NewsMapper;
 
 import java.util.List;
@@ -30,9 +29,9 @@ public class NewsServiceImpl implements NewsService {
     private final NewsMapper newsMapper = Mappers.getMapper(NewsMapper.class);
 
     @Override
-    public List<News> findAllByPageableAndCriteria(Pageable pageable, NewsCriteria criteria) {
-        Specification<News> searchSpecification = Specification.where(NewsSpecifications.hasTitleLike(criteria.getTitle()))
-                .and(NewsSpecifications.hasTextLike(criteria.getText()));
+    public List<News> findAllByPageableAndQueryMatch(Pageable pageable, String query) {
+        Specification<News> searchSpecification =
+                Specification.where(NewsSpecifications.hasMatchWithQuery(query));
 
         return newsRepository.findAll(searchSpecification, pageable).getContent();
     }

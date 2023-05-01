@@ -36,8 +36,8 @@ public class CommentServiceImpl implements CommentService {
     private final CommentMapper commentMapper = Mappers.getMapper(CommentMapper.class);
 
     @Override
-    public List<Comment> findAllByNewsIdAndPageableAndCriteria(
-            Long newsId, Pageable pageable, CommentCriteria criteria) {
+    public List<Comment> findAllByNewsIdAndPageableAndMatchWithQuery(
+            Long newsId, Pageable pageable, String query) {
         News news = newsRepository.findById(newsId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         messagesSource.get(NewsMessageKey.NOT_FOUND_BY_ID, newsId)
@@ -45,8 +45,7 @@ public class CommentServiceImpl implements CommentService {
 
         Specification<Comment> searchSpecification =
                 Specification.where(CommentSpecifications.hasNewsId(news.getId()))
-                        .and(CommentSpecifications.hasTextLike(criteria.getText()))
-                        .and(CommentSpecifications.hasUsernameLike(criteria.getUsername()));
+                        .and(CommentSpecifications.hasMatchWithQuery(query));
 
         return commentRepository.findAll(searchSpecification, pageable).getContent();
     }

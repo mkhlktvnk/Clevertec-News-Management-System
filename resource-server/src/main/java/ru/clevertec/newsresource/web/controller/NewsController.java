@@ -18,15 +18,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.clevertec.newsresource.entity.News;
 import ru.clevertec.newsresource.service.NewsService;
 import ru.clevertec.newsresource.web.criteria.NewsCriteria;
@@ -84,9 +76,9 @@ public class NewsController {
             )
     })
     @GetMapping("/news")
-    public ResponseEntity<List<NewsDto>> findAllByPageableAndCriteria(
-            @PageableDefault Pageable pageable, @Valid NewsCriteria criteria) {
-        List<News> news = newsService.findAllByPageableAndCriteria(pageable, criteria);
+    public ResponseEntity<List<NewsDto>> findAllByPageableAndMatchWithQuery(
+            @PageableDefault Pageable pageable, @RequestParam(required = false) String query) {
+        List<News> news = newsService.findAllByPageableAndQueryMatch(pageable, query);
         return ResponseEntity.ok(newsMapper.toDto(news));
     }
 

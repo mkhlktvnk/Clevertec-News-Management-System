@@ -1,29 +1,25 @@
 package ru.clevertec.newsresource.specifications;
 
+import jakarta.persistence.criteria.Predicate;
 import lombok.experimental.UtilityClass;
 import org.springframework.data.jpa.domain.Specification;
 import ru.clevertec.newsresource.entity.News;
 
+
 @UtilityClass
 public class NewsSpecifications {
 
-    public Specification<News> hasTitleLike(String title) {
+    public Specification<News> hasMatchWithQuery(String searchQuery) {
         return ((root, query, criteriaBuilder) -> {
-            if (title == null) {
-                return criteriaBuilder.isTrue(criteriaBuilder.literal(true));
-            }
-            return criteriaBuilder.like(criteriaBuilder.lower(root.get("title")),
-                    "%" + title.toLowerCase() + "%");
-        });
-    }
+           if (searchQuery == null) {
+               return criteriaBuilder.isTrue(criteriaBuilder.literal(true));
+           }
 
-    public Specification<News> hasTextLike(String text) {
-        return ((root, query, criteriaBuilder) -> {
-            if (text == null) {
-                return criteriaBuilder.isTrue(criteriaBuilder.literal(true));
-            }
-            return criteriaBuilder.like(criteriaBuilder.lower(root.get("text")),
-                    "%" + text.toLowerCase() + "%");
+           String pattern = "%" + searchQuery + "%";
+           Predicate titlePredicate = criteriaBuilder.like(criteriaBuilder.lower(root.get("title")), pattern);
+           Predicate textPredicate = criteriaBuilder.like(criteriaBuilder.lower(root.get("text")), pattern);
+
+           return criteriaBuilder.or(titlePredicate, textPredicate);
         });
     }
 

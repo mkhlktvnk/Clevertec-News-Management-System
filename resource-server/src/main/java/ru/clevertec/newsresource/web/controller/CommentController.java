@@ -10,7 +10,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.mapstruct.factory.Mappers;
 import org.springframework.data.domain.Pageable;
@@ -18,18 +17,9 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.clevertec.newsresource.entity.Comment;
 import ru.clevertec.newsresource.service.CommentService;
-import ru.clevertec.newsresource.web.criteria.CommentCriteria;
 import ru.clevertec.newsresource.web.dto.CommentDto;
 import ru.clevertec.newsresource.web.dto.ApiError;
 import ru.clevertec.newsresource.web.mapper.CommentMapper;
@@ -99,9 +89,10 @@ public class CommentController {
             )
     })
     @GetMapping("/news/{newsId}/comments")
-    public ResponseEntity<List<CommentDto>> findAllByNewsIdAndPageableAndCriteria(
-            @PathVariable Long newsId, @PageableDefault Pageable pageable, @Valid CommentCriteria criteria) {
-        List<Comment> comments = commentService.findAllByNewsIdAndPageableAndCriteria(newsId, pageable, criteria);
+    public ResponseEntity<List<CommentDto>> findAllByNewsIdAndPageableAndMatchWithQuery(
+            @PathVariable Long newsId, @PageableDefault Pageable pageable,
+            @RequestParam(required = false) String query) {
+        List<Comment> comments = commentService.findAllByNewsIdAndPageableAndMatchWithQuery(newsId, pageable, query);
         return ResponseEntity.ok(commentMapper.toDto(comments));
     }
 
