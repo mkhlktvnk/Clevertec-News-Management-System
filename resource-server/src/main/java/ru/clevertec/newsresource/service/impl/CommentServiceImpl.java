@@ -1,7 +1,9 @@
 package ru.clevertec.newsresource.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.mapstruct.factory.Mappers;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -20,6 +22,7 @@ import ru.clevertec.newsresource.service.message.MessagesSource;
 import ru.clevertec.newsresource.service.message.key.NewsMessageKey;
 import ru.clevertec.newsresource.specifications.CommentSpecifications;
 import ru.clevertec.newsresource.web.criteria.CommentCriteria;
+import ru.clevertec.newsresource.web.mapper.CommentMapper;
 
 import java.util.List;
 
@@ -30,7 +33,7 @@ public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
     private final NewsRepository newsRepository;
     private final MessagesSource messagesSource;
-    private final ModelMapper modelMapper = new ModelMapper();
+    private final CommentMapper commentMapper = Mappers.getMapper(CommentMapper.class);
 
     @Override
     public List<Comment> findAllByNewsIdAndPageableAndCriteria(
@@ -77,7 +80,7 @@ public class CommentServiceImpl implements CommentService {
                 .orElseThrow(() -> new ResourceNotFoundException(
                         messagesSource.get(CommentMessageKey.COMMENT_NOT_FOUND_BY_ID, commentId)
                 ));
-        modelMapper.map(updateComment, commentToUpdate);
+        commentMapper.mapNotNullFields(commentToUpdate, updateComment);
         commentRepository.save(commentToUpdate);
     }
 
