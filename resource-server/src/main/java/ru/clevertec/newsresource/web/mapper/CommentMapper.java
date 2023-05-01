@@ -1,6 +1,6 @@
 package ru.clevertec.newsresource.web.mapper;
 
-import org.mapstruct.Mapper;
+import org.mapstruct.*;
 import ru.clevertec.newsresource.entity.Comment;
 import ru.clevertec.newsresource.web.dto.CommentDto;
 
@@ -14,4 +14,19 @@ public interface CommentMapper {
     Comment toEntity(CommentDto commentDto);
 
     List<CommentDto> toDto(Collection<Comment> comments);
+
+    @Mappings({
+            @Mapping(target = "id", ignore = true),
+            @Mapping(target = "time", ignore = true),
+            @Mapping(target = "news", ignore = true),
+            @Mapping(
+                    target = "text",
+                    nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE
+            ),
+            @Mapping(
+                    target = "username",
+                    nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE
+            )
+    })
+    void mapNotNullFields(@MappingTarget Comment target, Comment source);
 }
