@@ -63,6 +63,10 @@ public class NewsController {
                             "Multiple sorting criteria can be separated by commas.",
                     example = "createdDate,asc",
                     schema = @Schema(type = "string")
+            ),
+            @Parameter(
+                    name = "query",
+                    description = "Query to perform full-text search"
             )
     })
     @ApiResponses(value = {

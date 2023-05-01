@@ -34,7 +34,7 @@ public class CommentController {
     private final CommentService commentService;
     private final CommentMapper commentMapper = Mappers.getMapper(CommentMapper.class);
 
-    @Operation(summary = "Get comments by news ID with pagination and optional filtering")
+    @Operation(summary = "Get comments by news ID with pagination and optional full-text search")
     @Parameters(value = {
             @Parameter(
                     name = "newsId",
@@ -61,6 +61,10 @@ public class CommentController {
                             "Multiple sorting criteria can be separated by commas.",
                     example = "createdDate,asc",
                     schema = @Schema(type = "string")
+            ),
+            @Parameter(
+                    name = "query",
+                    description = "Query to perform full-text search"
             )
     })
     @ApiResponses(value = {
