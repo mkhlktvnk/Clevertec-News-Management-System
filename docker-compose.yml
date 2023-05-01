@@ -4,6 +4,18 @@ networks:
   backend:
 
 services:
+  resource-server:
+    build:
+      context: ./resource-server
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - backend
+
   postgres:
     image: postgres:13.3
     environment:
