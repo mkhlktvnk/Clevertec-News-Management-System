@@ -28,5 +28,5 @@ public interface NewsMapper {
                     nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE
             )
     })
-    void mapNotNullFields(@MappingTarget News news, News source);
+    void mapNotNullFields(@MappingTarget News target, News source);
 }
