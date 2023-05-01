@@ -17,4 +17,7 @@ public class CommentCriteria {
     @Size(min = 1)
     private String text;
 
+    @Size(min = 1)
+    private String username;
+
 }
