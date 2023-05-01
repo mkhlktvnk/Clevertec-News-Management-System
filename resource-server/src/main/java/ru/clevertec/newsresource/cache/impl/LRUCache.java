@@ -23,10 +23,10 @@ public class LRUCache implements Cache<String, Object> {
     }
 
     @Override
-    public void put(String key, String name, Object value) {
+    public void put(String key, String prefix, Object value) {
         lock.writeLock().lock();
         try {
-            String cacheKey = key + ":" + name;
+            String cacheKey = prefix + ":" + key;
             if (this.capacity == 0) {
                 return;
             }
@@ -45,10 +45,10 @@ public class LRUCache implements Cache<String, Object> {
     }
 
     @Override
-    public Optional<Object> get(String key, String name) {
+    public Optional<Object> get(String key, String prefix) {
         lock.readLock().lock();
         try {
-            String cacheKey = key + ":" + name;
+            String cacheKey = prefix + ":" + key;
             if (!keyValueMap.containsKey(cacheKey)) {
                 return Optional.empty();
             }
@@ -61,10 +61,10 @@ public class LRUCache implements Cache<String, Object> {
     }
 
     @Override
-    public void evict(String key, String name) {
+    public void evict(String key, String prefix) {
         lock.writeLock().lock();
         try {
-            String cacheKey = key + ":" + name;
+            String cacheKey = prefix + ":" + key;
             if (!keys.contains(cacheKey)) {
                 return;
             }
@@ -74,5 +74,4 @@ public class LRUCache implements Cache<String, Object> {
             lock.writeLock().unlock();
         }
     }
-
 }
