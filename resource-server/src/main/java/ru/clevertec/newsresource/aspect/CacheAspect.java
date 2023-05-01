@@ -19,14 +19,13 @@ import org.springframework.stereotype.Component;
 import ru.clevertec.newsresource.cache.Cache;
 import ru.clevertec.newsresource.entity.Identifiable;
 
-import java.util.Arrays;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
 @Slf4j
 @Aspect
 @Component
-@Profile("dev")
+@Profile("!prod")
 @RequiredArgsConstructor
 public class CacheAspect {
     private final Cache<String, Object> cache;

@@ -9,7 +9,7 @@ import ru.clevertec.newsresource.cache.factory.CacheFactory;
 import ru.clevertec.newsresource.cache.properties.CacheProperties;
 
 @Configuration
-@Profile({"dev", "test"})
+@Profile("!prod")
 @RequiredArgsConstructor
 public class InMemoryCacheConfig {
     private final CacheProperties cacheProperties;
