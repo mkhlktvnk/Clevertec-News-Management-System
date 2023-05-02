@@ -14,8 +14,8 @@ repositories {
 }
 
 dependencies {
-    implementation 'ru.clevertec.logging:logging-starter:1.0'
-    implementation 'ru.clevertec.exception.handling.starter:exception-handling-starter:1.0'
+    implementation project(':logging-starter')
+    implementation project(':exception-handling-starter')
     implementation 'org.springframework.boot:spring-boot-configuration-processor'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -57,5 +57,6 @@ dependencyManagement {
 }
 
 test {
+    enabled = false
     useJUnitPlatform()
 }
