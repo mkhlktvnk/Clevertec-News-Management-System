@@ -21,7 +21,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.clevertec.newsresource.entity.News;
 import ru.clevertec.newsresource.service.NewsService;
-import ru.clevertec.newsresource.web.criteria.NewsCriteria;
 import ru.clevertec.newsresource.web.dto.ApiError;
 import ru.clevertec.newsresource.web.dto.NewsDto;
 import ru.clevertec.newsresource.web.mapper.NewsMapper;
