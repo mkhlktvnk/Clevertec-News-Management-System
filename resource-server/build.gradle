@@ -9,11 +9,12 @@ version '1.0-SNAPSHOT'
 sourceCompatibility = '17'
 
 repositories {
+    mavenLocal()
     mavenCentral()
 }
 
 dependencies {
-    implementation project(":logging-starter")
+    implementation 'ru.clevertec.logging:logging-starter:1.0'
     implementation 'org.springframework.boot:spring-boot-configuration-processor'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
