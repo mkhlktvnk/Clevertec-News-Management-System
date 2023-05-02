@@ -13,6 +13,16 @@ services:
     depends_on:
       - postgres
       - redis
+      - config-server
+    networks:
+      - backend
+
+  config-server:
+    build:
+      context: ./config-server
+      dockerfile: Dockerfile
+    ports:
+      - "8888:8888"
     networks:
       - backend
 
