@@ -19,10 +19,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.clevertec.exception.handling.starter.response.ErrorResponse;
 import ru.clevertec.logging.annotation.Loggable;
 import ru.clevertec.newsresource.entity.News;
 import ru.clevertec.newsresource.service.NewsService;
-import ru.clevertec.newsresource.web.dto.ApiError;
 import ru.clevertec.newsresource.web.dto.NewsDto;
 import ru.clevertec.newsresource.web.mapper.NewsMapper;
 
@@ -108,7 +108,7 @@ public class NewsController {
                     description = "Comment was not found by ID",
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = ApiError.class),
+                            schema = @Schema(implementation = ErrorResponse.class),
                             examples = @ExampleObject(
                                     value = "{" +
                                                 "\"status\": 404, " +
@@ -158,7 +158,7 @@ public class NewsController {
                     description = "News was not found by ID",
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = ApiError.class),
+                            schema = @Schema(implementation = ErrorResponse.class),
                             examples = @ExampleObject(
                                     value = "{" +
                                             "\"status\": 404, " +
@@ -192,7 +192,7 @@ public class NewsController {
                     description = "News was not found by ID",
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = ApiError.class),
+                            schema = @Schema(implementation = ErrorResponse.class),
                             examples = @ExampleObject(
                                     value = "{" +
                                             "\"status\": 404, " +

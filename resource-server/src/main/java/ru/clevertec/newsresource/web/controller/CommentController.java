@@ -18,11 +18,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.clevertec.exception.handling.starter.response.ErrorResponse;
 import ru.clevertec.logging.annotation.Loggable;
 import ru.clevertec.newsresource.entity.Comment;
 import ru.clevertec.newsresource.service.CommentService;
 import ru.clevertec.newsresource.web.dto.CommentDto;
-import ru.clevertec.newsresource.web.dto.ApiError;
 import ru.clevertec.newsresource.web.mapper.CommentMapper;
 
 import java.util.List;
@@ -82,7 +82,7 @@ public class CommentController {
                     description = "The news for which it was necessary to find comments was not found",
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = ApiError.class),
+                            schema = @Schema(implementation = ErrorResponse.class),
                             examples = @ExampleObject(
                                     value = "{" +
                                                 "\"status\": 404, " +
@@ -122,7 +122,7 @@ public class CommentController {
                     description = "Comment was not found by ID",
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = ApiError.class),
+                            schema = @Schema(implementation = ErrorResponse.class),
                             examples = @ExampleObject(
                                     value = "{" +
                                             "\"status\": 404, " +
@@ -163,7 +163,7 @@ public class CommentController {
                     description = "News was not found by ID",
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = ApiError.class),
+                            schema = @Schema(implementation = ErrorResponse.class),
                             examples = @ExampleObject(
                                     value = "{" +
                                                 "\"status\": 404, " +
@@ -202,7 +202,7 @@ public class CommentController {
                     description = "Comment was not found by ID",
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = ApiError.class),
+                            schema = @Schema(implementation = ErrorResponse.class),
                             examples = @ExampleObject(
                                     value = "{" +
                                                 "\"status\": 404, " +
@@ -231,7 +231,7 @@ public class CommentController {
                     description = "Comment was not found by ID",
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = ApiError.class),
+                            schema = @Schema(implementation = ErrorResponse.class),
                             examples = @ExampleObject(
                                     value = "{" +
                                             "\"status\": 404, " +

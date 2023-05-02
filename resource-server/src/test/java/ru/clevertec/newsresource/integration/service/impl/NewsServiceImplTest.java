@@ -5,11 +5,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import ru.clevertec.exception.handling.starter.exception.ResourceNotFoundException;
 import ru.clevertec.newsresource.builder.impl.NewsTestBuilder;
 import ru.clevertec.newsresource.entity.News;
 import ru.clevertec.newsresource.integration.BaseIntegrationTest;
 import ru.clevertec.newsresource.service.NewsService;
-import ru.clevertec.newsresource.service.exception.ResourceNotFoundException;
 import ru.clevertec.newsresource.service.message.MessagesSource;
 import ru.clevertec.newsresource.service.message.key.NewsMessageKey;
 
