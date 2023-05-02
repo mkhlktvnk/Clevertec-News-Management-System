@@ -18,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.clevertec.logging.annotation.Loggable;
 import ru.clevertec.newsresource.entity.Comment;
 import ru.clevertec.newsresource.service.CommentService;
 import ru.clevertec.newsresource.web.dto.CommentDto;
@@ -92,6 +93,7 @@ public class CommentController {
                     )
             )
     })
+    @Loggable
     @GetMapping("/news/{newsId}/comments")
     public ResponseEntity<List<CommentDto>> findAllByNewsIdAndPageableAndMatchWithQuery(
             @PathVariable Long newsId, @PageableDefault Pageable pageable,
@@ -131,6 +133,7 @@ public class CommentController {
                     )
             )
     })
+    @Loggable
     @GetMapping("/comments/{id}")
     public ResponseEntity<CommentDto> findCommentById(@PathVariable Long id) {
         Comment comment = commentService.findById(id);
@@ -171,6 +174,7 @@ public class CommentController {
                     )
             )
     })
+    @Loggable
     @PostMapping("/news/{newsId}/comments")
     public ResponseEntity<CommentDto> addCommentToNews(
             @PathVariable Long newsId, @RequestBody CommentDto comment) {
@@ -209,6 +213,7 @@ public class CommentController {
                     )
             )
     })
+    @Loggable
     @PatchMapping("/comments/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateCommentPartiallyById(@PathVariable Long id, @RequestBody CommentDto updateComment) {
@@ -238,6 +243,7 @@ public class CommentController {
             )
 
     })
+    @Loggable
     @DeleteMapping("/comments/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteCommentById(@PathVariable Long id) {

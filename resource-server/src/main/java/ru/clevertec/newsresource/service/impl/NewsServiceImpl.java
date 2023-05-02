@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.clevertec.logging.annotation.Loggable;
 import ru.clevertec.newsresource.entity.News;
 import ru.clevertec.newsresource.repository.NewsRepository;
 import ru.clevertec.newsresource.service.NewsService;
@@ -29,6 +30,7 @@ public class NewsServiceImpl implements NewsService {
     private final NewsMapper newsMapper = Mappers.getMapper(NewsMapper.class);
 
     @Override
+    @Loggable
     public List<News> findAllByPageableAndQueryMatch(Pageable pageable, String query) {
         Specification<News> searchSpecification =
                 Specification.where(NewsSpecifications.hasMatchWithQuery(query));
@@ -37,6 +39,7 @@ public class NewsServiceImpl implements NewsService {
     }
 
     @Override
+    @Loggable
     @Cacheable(value = "news", key = "#newsId")
     public News findNewsById(Long newsId) {
         return newsRepository.findById(newsId)
@@ -46,6 +49,7 @@ public class NewsServiceImpl implements NewsService {
     }
 
     @Override
+    @Loggable
     @Transactional
     @CachePut(value = "news", key = "#result.id")
     public News saveNews(News news) {
@@ -53,6 +57,7 @@ public class NewsServiceImpl implements NewsService {
     }
 
     @Override
+    @Loggable
     @Transactional
     @CachePut(value = "news", key = "#newsId")
     public void updateNewsPartiallyById(Long newsId, News updateNews) {
@@ -65,6 +70,7 @@ public class NewsServiceImpl implements NewsService {
     }
 
     @Override
+    @Loggable
     @Transactional
     @CacheEvict(value = "news", key = "#newsId")
     public void deleteNewsById(Long newsId) {

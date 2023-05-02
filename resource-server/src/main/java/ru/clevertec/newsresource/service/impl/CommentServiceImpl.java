@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.clevertec.logging.annotation.Loggable;
 import ru.clevertec.newsresource.entity.Comment;
 import ru.clevertec.newsresource.entity.News;
 import ru.clevertec.newsresource.repository.CommentRepository;
@@ -33,6 +34,7 @@ public class CommentServiceImpl implements CommentService {
     private final CommentMapper commentMapper = Mappers.getMapper(CommentMapper.class);
 
     @Override
+    @Loggable
     public List<Comment> findAllByNewsIdAndPageableAndQueryMatch(
             Long newsId, Pageable pageable, String query) {
         News news = newsRepository.findById(newsId)
@@ -48,6 +50,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Loggable
     @Cacheable(value = "comment", key = "#commentId")
     public Comment findById(Long commentId) {
         return commentRepository.findById(commentId)
@@ -57,6 +60,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Loggable
     @Transactional
     @CachePut(value = "comment", key = "#result.id")
     public Comment addCommentToNews(Long newsId, Comment comment) {
@@ -69,6 +73,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Loggable
     @Transactional
     @CachePut(value = "comment", key = "#commentId")
     public void updateCommentPartiallyById(Long commentId, Comment updateComment) {
@@ -81,6 +86,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Loggable
     @Transactional
     @CacheEvict(value = "comment", key = "#commentId")
     public void deleteCommentById(Long commentId) {

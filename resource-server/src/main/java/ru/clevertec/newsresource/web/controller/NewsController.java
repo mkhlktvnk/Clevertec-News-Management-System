@@ -19,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.clevertec.logging.annotation.Loggable;
 import ru.clevertec.newsresource.entity.News;
 import ru.clevertec.newsresource.service.NewsService;
 import ru.clevertec.newsresource.web.dto.ApiError;
@@ -78,6 +79,7 @@ public class NewsController {
                     )
             )
     })
+    @Loggable
     @GetMapping("/news")
     public ResponseEntity<List<NewsDto>> findAllByPageableAndMatchWithQuery(
             @PageableDefault Pageable pageable, @RequestParam(required = false) String query) {
@@ -117,6 +119,7 @@ public class NewsController {
                     )
             )
     })
+    @Loggable
     @GetMapping("/news/{id}")
     public ResponseEntity<NewsDto> findNewsById(@PathVariable Long id) {
         News news = newsService.findNewsById(id);
@@ -132,6 +135,7 @@ public class NewsController {
                     schema = @Schema(implementation = NewsDto.class)
             )
     )
+    @Loggable
     @PostMapping("/news")
     public ResponseEntity<NewsDto> saveNews(@RequestBody NewsDto news) {
         News savedNews = newsService.saveNews(newsMapper.toEntity(news));
@@ -165,6 +169,7 @@ public class NewsController {
                     )
             )
     })
+    @Loggable
     @PatchMapping("/news/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateNewsPartiallyById(@PathVariable Long id, @RequestBody NewsDto updateNews) {
@@ -198,6 +203,7 @@ public class NewsController {
                     )
             )
     })
+    @Loggable
     @DeleteMapping("/news/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteNewsById(@PathVariable Long id) {
