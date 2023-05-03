@@ -25,7 +25,7 @@ import java.util.stream.IntStream;
 @Slf4j
 @Aspect
 @Component
-@Profile("!prod")
+@Profile({"dev", "test"})
 @RequiredArgsConstructor
 public class CacheAspect {
     private final Cache<String, Object> cache;
