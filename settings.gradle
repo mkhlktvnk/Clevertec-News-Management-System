@@ -3,4 +3,5 @@ include 'resource-server'
 include 'config-server'
 include 'logging-starter'
 include 'exception-handling-starter'
+include 'auth-server'
 
