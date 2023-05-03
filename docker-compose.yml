@@ -11,7 +11,7 @@ services:
     ports:
       - "8080:8080"
     depends_on:
-      - postgres
+      - news_database
       - redis
       - config-server
     networks:
@@ -26,7 +26,19 @@ services:
     networks:
       - backend
 
-  postgres:
+  users_database:
+    image: postgres:13.3
+    environment:
+      POSTGRES_DB: "users_database"
+      POSTGRES_USER: "users_db_user"
+      POSTGRES_PASSWORD: "users_db_password"
+    ports:
+      - "5431:5431"
+    restart: unless-stopped
+    networks:
+      - backend
+
+  news_database:
     image: postgres:13.3
     environment:
       POSTGRES_DB: "news_management_system"
