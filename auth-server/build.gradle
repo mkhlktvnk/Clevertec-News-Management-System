@@ -21,7 +21,10 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-config'
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
     implementation 'org.postgresql:postgresql:42.2.27'
+
+    implementation 'org.liquibase:liquibase-core:4.21.1'
 
     implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
