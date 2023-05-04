@@ -16,6 +16,7 @@ repositories {
 dependencies {
     implementation project(':logging-starter')
     implementation project(':exception-handling-starter')
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
     implementation 'org.springframework.boot:spring-boot-configuration-processor'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
