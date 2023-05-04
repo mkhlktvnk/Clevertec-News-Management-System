@@ -7,7 +7,7 @@ public interface TokenService {
 
     boolean isTokenValid(String token);
 
-    public String getTokenFromRequest(HttpServletRequest request);
+    String getTokenFromRequest(HttpServletRequest request);
 
     String getLoginFromToken(String token);
 }
