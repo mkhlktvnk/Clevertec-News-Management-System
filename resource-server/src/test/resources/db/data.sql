@@ -1,35 +1,100 @@
-INSERT INTO news (title, text)
-VALUES ('COVID-19 vaccination campaign started',
-        'The nationwide vaccination campaign against COVID-19 has begun today.'),
-       ('New research shows benefits of meditation',
-        'A new study conducted by researchers at Harvard Medical School suggests that daily meditation can help lower blood pressure and reduce symptoms of anxiety.'),
-       ('Scientists discover new species of lizard',
-        'A team of biologists has discovered a new species of lizard in the Amazon rainforest.'),
-       ('Apple unveils new iPhone models',
-        'Apple has announced the release of three new iPhone models, the iPhone 13, 13 Mini, and 13 Pro.'),
-       ('SpaceX launches Falcon 9 rocket',
-        'SpaceX has successfully launched a Falcon 9 rocket carrying a satellite into orbit.'),
-       ('New study links high sugar intake to heart disease',
-        'A new study published in the Journal of the American Medical Association has found a link between high sugar intake and an increased risk of heart disease.'),
-       ('Google announces new privacy features',
-        'Google has announced new privacy features for its users, including the ability to automatically delete search and location data.'),
-       ('Paris Fashion Week kicks off',
-        'The bi-annual Paris Fashion Week has begun, showcasing the latest designs from some of the world''s top fashion houses.'),
-       ('Tesla introduces new self-driving technology',
-        'Tesla has introduced a new self-driving technology that it claims will make driving safer and more convenient.'),
-       ('World''s largest solar farm opens in China',
-        'China has opened the world''s largest solar farm, which is capable of powering 15,000 homes.');
+INSERT INTO news (username, title, text)
+VALUES ('user1', 'New study shows benefits of regular exercise',
+        'A new study published in the Journal of Health and Fitness suggests that regular exercise can significantly improve overall health and well-being.');
+SELECT setval('news_id_seq', (SELECT MAX(id) FROM news));
+INSERT INTO news (username, title, text)
+VALUES ('user2', 'Experts predict surge in renewable energy investment',
+        'Leading energy experts are predicting a significant increase in investment in renewable energy projects over the next decade.');
+SELECT setval('news_id_seq', (SELECT MAX(id) FROM news));
+INSERT INTO news (username, title, text)
+VALUES ('user3', 'Global pandemic highlights importance of digital connectivity',
+        'The COVID-19 pandemic has emphasized the crucial role of digital connectivity in keeping people connected and businesses running.');
+SELECT setval('news_id_seq', (SELECT MAX(id) FROM news));
+INSERT INTO news (username, title, text)
+VALUES ('user4', 'New artificial intelligence technology promises to revolutionize healthcare',
+        'A new AI-based diagnostic tool developed by a team of researchers could dramatically improve the accuracy and speed of disease diagnosis.');
+SELECT setval('news_id_seq', (SELECT MAX(id) FROM news));
+INSERT INTO news (username, title, text)
+VALUES ('user5', 'Scientists discover new species of dinosaur',
+        'Paleontologists have unearthed fossils of a previously unknown species of dinosaur that roamed the earth millions of years ago.');
+SELECT setval('news_id_seq', (SELECT MAX(id) FROM news));
+INSERT INTO news (username, title, text)
+VALUES ('user6', 'New research reveals potential risks of artificial sweeteners',
+        'A recent study has found that consuming large quantities of artificial sweeteners could have negative health effects, including an increased risk of type 2 diabetes.');
+SELECT setval('news_id_seq', (SELECT MAX(id) FROM news));
+INSERT INTO news (username, title, text)
+VALUES ('user7', 'Experts warn of potential food shortages due to climate change',
+        'A report by leading climate scientists warns that global warming could have devastating impacts on agriculture, potentially leading to widespread food shortages in the coming decades.');
+SELECT setval('news_id_seq', (SELECT MAX(id) FROM news));
+INSERT INTO news (username, title, text)
+VALUES ('user8', 'New study suggests link between air pollution and cognitive decline',
+        'A study conducted by researchers at a leading university has found a correlation between exposure to air pollution and a decline in cognitive function, particularly in older adults.');
+SELECT setval('news_id_seq', (SELECT MAX(id) FROM news));
+INSERT INTO news (username, title, text)
+VALUES ('user9', 'NASA announces plans for manned mission to Mars',
+        'NASA has unveiled plans for a manned mission to Mars, with a target date set for the mid-2030s. The mission aims to explore the Red Planet and search for signs of extraterrestrial life.');
+SELECT setval('news_id_seq', (SELECT MAX(id) FROM news));
+INSERT INTO news (username, title, text)
+VALUES ('user10', 'New breakthrough in quantum computing could revolutionize cryptography',
+        'Scientists at a leading research institution have made a major breakthrough in quantum computing that could pave the way for new and more secure forms of cryptography.');
+SELECT setval('news_id_seq', (SELECT MAX(id) FROM news));
+INSERT INTO news (username, title, text)
+VALUES ('user11', 'Global efforts to reduce plastic waste gain momentum',
+        'Governments and organizations around the world are ramping up efforts to reduce plastic waste and promote recycling, in response to growing concerns about the impact of plastics on the environment.');
+SELECT setval('news_id_seq', (SELECT MAX(id) FROM news));
+INSERT INTO news (username, title, text)
+VALUES ('user12', 'New study sheds light on causes of depression',
+        'A new study has uncovered a possible link between inflammation and depression, providing new insights into the biological mechanisms that underlie the condition.');
+SELECT setval('news_id_seq', (SELECT MAX(id) FROM news));
+
+INSERT INTO news (username, title, text)
+VALUES ('user1', 'New study shows benefits of regular exercise',
+        'A new study published in the Journal of Health and Fitness suggests that regular exercise can significantly improve overall health and well-being.');
 
 INSERT INTO comments (username, text, news_id)
-VALUES ('JohnDoe', 'Great news! Finally, some hope in these tough times.', 1),
-       ('JaneSmith', 'I''m skeptical about the vaccine. Has it been tested enough?', 1),
-       ('BobJohnson', 'This is really interesting. I might try meditation myself.', 2),
-       ('AliceGreen', 'I''ve always been fascinated by lizards. Can''t wait to learn more about this new species!', 3),
-       ('SamWilliams',
-        'I''m not really impressed by the new iPhone models. I think I''ll stick with my current phone for now.', 4),
-       ('EmilyBrown', 'SpaceX is doing some really amazing things. Can''t wait to see what they come up with next!', 5),
-       ('TomWilson', 'This is really concerning. I''ll definitely be cutting back on my sugar intake from now on.', 6),
-       ('LucyJones', 'It''s good to see that tech companies are starting to take privacy more seriously.', 7),
-       ('DavidLee', 'I always look forward to Paris Fashion Week. So much creativity and talent!', 8),
-       ('KarenMiller', 'Self-driving cars are the future. Can''t wait to see how this technology develops!', 9),
-       ('MarkTaylor', 'This is great news for the environment. We need more renewable energy sources like this.', 10);
+VALUES ('user1', 'I totally agree with this study!', 1);
+SELECT setval('comments_id_seq', (SELECT MAX(id) FROM comments));
+
+INSERT INTO comments (username, text, news_id)
+VALUES ('user2', 'I am hopeful for the future of renewable energy!', 2);
+SELECT setval('comments_id_seq', (SELECT MAX(id) FROM comments));
+
+INSERT INTO comments (username, text, news_id)
+VALUES ('user3', 'Digital connectivity has been a lifesaver during the pandemic.', 3);
+SELECT setval('comments_id_seq', (SELECT MAX(id) FROM comments));
+
+INSERT INTO comments (username, text, news_id)
+VALUES ('user4', 'AI technology is fascinating, but I hope it doesnt replace human doctors.', 4);
+SELECT setval('comments_id_seq', (SELECT MAX(id) FROM comments));
+
+INSERT INTO comments (username, text, news_id)
+VALUES ('user5', 'Its amazing how much we can learn from fossils.', 5);
+SELECT setval('comments_id_seq', (SELECT MAX(id) FROM comments));
+
+INSERT INTO comments (username, text, news_id)
+VALUES ('user6', 'Ive always been skeptical of artificial sweeteners.', 6);
+SELECT setval('comments_id_seq', (SELECT MAX(id) FROM comments));
+
+INSERT INTO comments (username, text, news_id)
+VALUES ('user7', 'This study provides important information about the risks of artificial sweeteners.', 6);
+SELECT setval('comments_id_seq', (SELECT MAX(id) FROM comments));
+
+INSERT INTO comments (username, text, news_id)
+VALUES ('user8', 'I think we need to prioritize mental health as much as physical health.', 7);
+SELECT setval('comments_id_seq', (SELECT MAX(id) FROM comments));
+
+INSERT INTO comments (username, text, news_id)
+VALUES ('user9', 'This pandemic has shown us just how important it is to have a strong healthcare system.', 8);
+SELECT setval('comments_id_seq', (SELECT MAX(id) FROM comments));
+
+INSERT INTO comments (username, text, news_id)
+VALUES ('user10', 'I hope this new technology can improve access to healthcare for everyone.', 4);
+SELECT setval('comments_id_seq', (SELECT MAX(id) FROM comments));
+
+INSERT INTO comments (username, text, news_id)
+VALUES ('user11', 'I am excited to see what new discoveries paleontologists will make in the future.', 5);
+SELECT setval('comments_id_seq', (SELECT MAX(id) FROM comments));
+
+INSERT INTO comments (username, text, news_id)
+VALUES ('user12', 'We should all do our part to take care of the environment.', 2);
+SELECT setval('comments_id_seq', (SELECT MAX(id) FROM comments));
