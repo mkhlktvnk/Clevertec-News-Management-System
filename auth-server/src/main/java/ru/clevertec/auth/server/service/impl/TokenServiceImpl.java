@@ -9,13 +9,11 @@ import org.springframework.stereotype.Service;
 import ru.clevertec.auth.server.properties.JwtProperties;
 import ru.clevertec.auth.server.service.TokenService;
 
-import javax.crypto.spec.SecretKeySpec;
-import java.nio.charset.StandardCharsets;
-import java.security.Key;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -28,13 +26,12 @@ public class TokenServiceImpl implements TokenService {
                 .atZone(ZoneId.systemDefault()).toInstant());
 
         Claims claims = generateClaims(username, roles);
-        Key signingKey = generateSigningKeyBasedOnPrivateKey();
 
         return Jwts.builder()
                 .setSubject(username)
                 .setClaims(claims)
                 .setExpiration(date)
-                .signWith(signingKey, SignatureAlgorithm.HS512)
+                .signWith(properties.getPrivateKey(), SignatureAlgorithm.RS256)
                 .compact();
     }
 
@@ -42,7 +39,7 @@ public class TokenServiceImpl implements TokenService {
     public boolean isTokenValid(String token) {
         try {
             Jwts.parserBuilder()
-                    .setSigningKey(generateSigningKeyBasedOnPrivateKey())
+                    .setSigningKey(properties.getPrivateKey())
                     .build()
                     .parseClaimsJws(token);
         } catch (Exception e) {
@@ -54,12 +51,11 @@ public class TokenServiceImpl implements TokenService {
     private Claims generateClaims(String username, Collection<? extends GrantedAuthority> roles) {
         Claims claims = Jwts.claims();
         claims.put("username", username);
-        claims.put("roles", roles);
+        claims.put("roles", getRolesValues(roles));
         return claims;
     }
 
-    private Key generateSigningKeyBasedOnPrivateKey() {
-        byte[] keyBytes = properties.getPrivateKey().getBytes(StandardCharsets.UTF_8);
-        return new SecretKeySpec(keyBytes, SignatureAlgorithm.HS512.getJcaName());
+    private List<String> getRolesValues(Collection<? extends GrantedAuthority> roles) {
+        return roles.stream().map(GrantedAuthority::getAuthority).toList();
     }
 }
