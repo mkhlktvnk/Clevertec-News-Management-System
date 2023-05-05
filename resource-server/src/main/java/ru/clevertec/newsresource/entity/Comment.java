@@ -33,7 +33,7 @@ public class Comment implements Identifiable<Long> {
     @Column(nullable = false)
     private Instant time;
 
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
     private String username;
 
     @Column(nullable = false)
