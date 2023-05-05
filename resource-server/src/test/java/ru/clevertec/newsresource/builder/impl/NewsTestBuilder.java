@@ -19,6 +19,7 @@ public class NewsTestBuilder implements TestBuilder<News> {
     private Instant time = Instant.now();
     private String title = "";
     private String text = "";
+    private String username = "";
     private List<Comment> comments = new ArrayList<>();
 
     @Override
@@ -29,6 +30,7 @@ public class NewsTestBuilder implements TestBuilder<News> {
         news.setTime(time);
         news.setTitle(title);
         news.setText(text);
+        news.setUsername(username);
         news.setComments(comments);
 
         return news;
