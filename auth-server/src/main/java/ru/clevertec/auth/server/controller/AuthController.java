@@ -1,13 +1,10 @@
 package ru.clevertec.auth.server.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.clevertec.auth.server.model.AuthRequest;
 import ru.clevertec.auth.server.model.AuthResponse;
 import ru.clevertec.auth.server.service.AuthService;
@@ -17,21 +14,21 @@ import ru.clevertec.auth.server.service.AuthService;
 public class AuthController {
     private final AuthService authService;
 
-    @PostMapping("/auth")
+    @PostMapping("/auth/token")
     public ResponseEntity<String> authenticate(@RequestBody @Valid AuthRequest authRequest) {
         String token = authService.authenticate(authRequest);
         return ResponseEntity.ok(token);
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<AuthResponse> register(@RequestBody @Valid AuthRequest authRequest) {
-        AuthResponse response = authService.register(authRequest);
-        return ResponseEntity.ok(response);
+    @GetMapping("/auth/validate")
+    public ResponseEntity<?> validate(@RequestHeader("Authorization") String token) {
+        return authService.isTokenValid(token) ? ResponseEntity.status(HttpStatus.OK).build() :
+                ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
-    @GetMapping("/validate")
-    public ResponseEntity<AuthResponse> validate(HttpServletRequest request) {
-        AuthResponse response = authService.validate(request);
+    @PostMapping("/auth/register")
+    public ResponseEntity<AuthResponse> register(@RequestBody @Valid AuthRequest authRequest) {
+        AuthResponse response = authService.register(authRequest);
         return ResponseEntity.ok(response);
     }
 
