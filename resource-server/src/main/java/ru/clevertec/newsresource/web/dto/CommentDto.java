@@ -3,6 +3,7 @@ package ru.clevertec.newsresource.web.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -49,5 +50,10 @@ public class CommentDto {
     @Size(min = 1)
     @JsonProperty(value = "text")
     private String text;
+
+    @NotNull
+    @Positive
+    @JsonProperty(value = "newsId")
+    private Long newsId;
 
 }
