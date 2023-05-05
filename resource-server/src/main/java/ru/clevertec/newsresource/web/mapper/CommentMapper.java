@@ -19,14 +19,11 @@ public interface CommentMapper {
             @Mapping(target = "id", ignore = true),
             @Mapping(target = "time", ignore = true),
             @Mapping(target = "news", ignore = true),
+            @Mapping(target = "username", ignore = true),
             @Mapping(
                     target = "text",
                     nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE
             ),
-            @Mapping(
-                    target = "username",
-                    nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE
-            )
     })
     void mapNotNullFields(@MappingTarget Comment target, Comment source);
 }
