@@ -9,13 +9,17 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.userdetails.User;
 import ru.clevertec.exception.handling.starter.exception.ResourceNotFoundException;
 import ru.clevertec.newsresource.builder.impl.CommentTestBuilder;
 import ru.clevertec.newsresource.builder.impl.NewsTestBuilder;
+import ru.clevertec.newsresource.builder.impl.UserTestBuilder;
 import ru.clevertec.newsresource.entity.Comment;
 import ru.clevertec.newsresource.entity.News;
 import ru.clevertec.newsresource.repository.CommentRepository;
 import ru.clevertec.newsresource.repository.NewsRepository;
+import ru.clevertec.newsresource.service.impl.CommentPermissionService;
 import ru.clevertec.newsresource.service.impl.CommentServiceImpl;
 import ru.clevertec.newsresource.service.message.MessagesSource;
 import ru.clevertec.newsresource.service.message.key.CommentMessageKey;
@@ -34,7 +38,9 @@ import static org.mockito.Mockito.verify;
 class CommentServiceImplTest {
 
     private static final Long COMMENT_ID = 1L;
+
     private static final Long NEWS_ID = 2L;
+
     private static final String QUERY = "I'm agree with this";
 
     @Mock
@@ -46,10 +52,13 @@ class CommentServiceImplTest {
     @Mock
     private MessagesSource messagesSource;
 
+    @Mock
+    private CommentPermissionService commentPermissionService;
+
     @InjectMocks
     private CommentServiceImpl commentService;
 
-/*    @Test
+    @Test
     void findAllByNewsIdAndPageableAndQueryMatchShouldReturnExpectedCommentsAndCallRepository() {
         Pageable pageable = PageRequest.of(0, 3);
         News news = NewsTestBuilder.aNews().build();
@@ -105,10 +114,13 @@ class CommentServiceImplTest {
     void addCommentToNewsShouldReturnSavedCommentAndCallRepository() {
         Comment expectedComment = CommentTestBuilder.aComment().build();
         News news = NewsTestBuilder.aNews().build();
-        doReturn(Optional.of(news)).when(newsRepository).findById(NEWS_ID);
-        doReturn(expectedComment).when(commentRepository).save(expectedComment);
+        User user = UserTestBuilder.anUser().withUsername("user-123").build();
+        doReturn(Optional.of(news))
+                .when(newsRepository).findById(NEWS_ID);
+        doReturn(expectedComment)
+                .when(commentRepository).save(expectedComment);
 
-        Comment actualComment = commentService.addCommentToNews(NEWS_ID, expectedComment);
+        Comment actualComment = commentService.addCommentToNews(NEWS_ID, expectedComment, user);
 
         verify(commentRepository).save(expectedComment);
         assertThat(actualComment).isEqualTo(expectedComment);
@@ -117,9 +129,10 @@ class CommentServiceImplTest {
     @Test
     void addCommentToNewsShouldThrowResourceNotFoundException() {
         Comment comment = CommentTestBuilder.aComment().build();
+        User user = UserTestBuilder.anUser().withUsername("user-123").build();
         doReturn(Optional.empty()).when(newsRepository).findById(NEWS_ID);
 
-        assertThatThrownBy(() -> commentService.addCommentToNews(NEWS_ID, comment))
+        assertThatThrownBy(() -> commentService.addCommentToNews(NEWS_ID, comment, user))
                 .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessage(messagesSource.get(NewsMessageKey.NOT_FOUND_BY_ID, NEWS_ID));
     }
@@ -128,9 +141,11 @@ class CommentServiceImplTest {
     void updateCommentPartiallyByIdShouldCallRepository() {
         Comment updateComment = CommentTestBuilder.aComment().build();
         Comment commentFromDb = CommentTestBuilder.aComment().build();
+        User user = UserTestBuilder.anUser().withUsername("user-123").build();
         doReturn(Optional.of(commentFromDb)).when(commentRepository).findById(COMMENT_ID);
+        doReturn(true).when(commentPermissionService).userHasPermissionToEditResource(user, commentFromDb);
 
-        commentService.updateCommentPartiallyById(COMMENT_ID, updateComment);
+        commentService.updateCommentPartiallyById(COMMENT_ID, user, updateComment);
 
         verify(commentRepository).findById(COMMENT_ID);
         verify(commentRepository).save(commentFromDb);
@@ -139,21 +154,59 @@ class CommentServiceImplTest {
     @Test
     void updateCommentPartiallyByIdShouldThrowResourceNotFoundException() {
         Comment updateComment = CommentTestBuilder.aComment().build();
+        User user = UserTestBuilder.anUser().withUsername("user-123").build();
         doReturn(Optional.empty()).when(commentRepository).findById(COMMENT_ID);
 
-        assertThatThrownBy(() -> commentService.updateCommentPartiallyById(COMMENT_ID, updateComment))
+        assertThatThrownBy(() -> commentService.updateCommentPartiallyById(COMMENT_ID, user, updateComment))
                 .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessage(messagesSource.get(CommentMessageKey.COMMENT_NOT_FOUND_BY_ID, COMMENT_ID));
     }
 
     @Test
+    void updateCommentPartiallyByIdShouldThrowAccessDeniedException() {
+        Comment updateComment = CommentTestBuilder.aComment().build();
+        Comment commentFromDb = CommentTestBuilder.aComment().build();
+        User user = UserTestBuilder.anUser().withUsername("user-123").build();
+        doReturn(Optional.of(commentFromDb)).when(commentRepository).findById(COMMENT_ID);
+        doReturn(false).when(commentPermissionService).userHasPermissionToEditResource(user, commentFromDb);
+
+        assertThatThrownBy(() -> commentService.updateCommentPartiallyById(COMMENT_ID, user, updateComment))
+                .isInstanceOf(AccessDeniedException.class)
+                .hasMessage(messagesSource.get(CommentMessageKey.UNABLE_TO_EDIT));
+    }
+
+    @Test
     void deleteCommentByIdShouldCallRepository() {
         Comment commentFromDb = CommentTestBuilder.aComment().build();
+        User user = UserTestBuilder.anUser().withUsername("user-123").build();
         doReturn(Optional.of(commentFromDb)).when(commentRepository).findById(COMMENT_ID);
+        doReturn(true).when(commentPermissionService).userHasPermissionToEditResource(user, commentFromDb);
 
-        commentService.deleteCommentById(COMMENT_ID);
+        commentService.deleteCommentById(COMMENT_ID, user);
 
         verify(commentRepository).findById(COMMENT_ID);
         verify(commentRepository).delete(commentFromDb);
-    }*/
+    }
+
+    @Test
+    void deleteCommentByIdShouldThrowResourceNotFoundException() {
+        User user = UserTestBuilder.anUser().withUsername("user-123").build();
+        doReturn(Optional.empty()).when(commentRepository).findById(COMMENT_ID);
+
+        assertThatThrownBy(() -> commentService.deleteCommentById(COMMENT_ID, user))
+                .isInstanceOf(ResourceNotFoundException.class)
+                .hasMessage(messagesSource.get(CommentMessageKey.COMMENT_NOT_FOUND_BY_ID, COMMENT_ID));
+    }
+
+    @Test
+    void deleteCommentByIdShouldAccessDeniedException() {
+        Comment commentFromDb = CommentTestBuilder.aComment().build();
+        User user = UserTestBuilder.anUser().withUsername("user-123").build();
+        doReturn(Optional.of(commentFromDb)).when(commentRepository).findById(COMMENT_ID);
+        doReturn(false).when(commentPermissionService).userHasPermissionToEditResource(user, commentFromDb);
+
+        assertThatThrownBy(() -> commentService.deleteCommentById(COMMENT_ID, user))
+                .isInstanceOf(AccessDeniedException.class)
+                .hasMessage(messagesSource.get(CommentMessageKey.UNABLE_TO_DELETE));
+    }
 }
