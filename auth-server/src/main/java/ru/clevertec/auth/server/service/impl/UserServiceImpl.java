@@ -28,10 +28,10 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public User saveUser(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        Role role = roleRepository.findByAuthority(RoleType.SUBSCRIBER.name())
+        Role role = roleRepository.findByAuthority(RoleType.ROLE_SUBSCRIBER.name())
                 .orElseGet(() -> {
                     Role authority = new Role();
-                    authority.setAuthority(RoleType.SUBSCRIBER.name());
+                    authority.setAuthority(RoleType.ROLE_SUBSCRIBER.name());
                     return roleRepository.save(authority);
                 });
         user.setAuthorities(Collections.singletonList(role));

@@ -1,7 +1,7 @@
 package ru.clevertec.auth.server.entity;
 
 public enum RoleType {
-    SUBSCRIBER,
-    JOURNALIST,
-    ADMIN
+    ROLE_SUBSCRIBER,
+    ROLE_JOURNALIST,
+    ROLE_ADMIN
 }

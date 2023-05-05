@@ -6,6 +6,7 @@ import org.mapstruct.factory.Mappers;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
+import ru.clevertec.auth.server.entity.Role;
 import ru.clevertec.auth.server.entity.User;
 import ru.clevertec.auth.server.mapper.UserMapper;
 import ru.clevertec.auth.server.model.AuthRequest;
@@ -14,6 +15,8 @@ import ru.clevertec.auth.server.service.AuthService;
 import ru.clevertec.auth.server.service.TokenService;
 import ru.clevertec.auth.server.service.UserService;
 import ru.clevertec.exception.handling.starter.exception.AuthenticationException;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -50,6 +53,9 @@ public class AuthServiceImpl implements AuthService {
 /*        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 user.getUsername(), user.getPassword()));*/
 
-        return mapper.mapToModel(user);
+        AuthResponse response = mapper.mapToModel(user);
+        List<String> authorities = user.getAuthorities().stream().map(Role::getAuthority).toList();
+        response.setAuthorities(authorities);
+        return response;
     }
 }

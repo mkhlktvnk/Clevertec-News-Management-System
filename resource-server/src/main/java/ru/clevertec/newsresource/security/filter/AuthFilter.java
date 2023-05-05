@@ -1,4 +1,4 @@
-package ru.clevertec.newsresource.filter;
+package ru.clevertec.newsresource.security.filter;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;

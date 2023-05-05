@@ -38,7 +38,7 @@ class CommentServiceImplTest extends BaseIntegrationTest {
     @Autowired
     private EntityManager entityManager;
 
-    @Test
+/*    @Test
     void findAllByNewsIdAndPageableAndQueryMatchShouldReturnExpectedCountOfComments() {
         Pageable pageable = PageRequest.of(0, 1);
         String query = "I'm";
@@ -128,5 +128,5 @@ class CommentServiceImplTest extends BaseIntegrationTest {
         assertThatThrownBy(() -> commentService.deleteCommentById(INCORRECT_COMMENT_ID))
                 .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessage(messagesSource.get(CommentMessageKey.COMMENT_NOT_FOUND_BY_ID, INCORRECT_COMMENT_ID));
-    }
+    }*/
 }

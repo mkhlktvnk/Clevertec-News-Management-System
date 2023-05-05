@@ -59,6 +59,5 @@ dependencyManagement {
 }
 
 test {
-    enabled = false
     useJUnitPlatform()
 }

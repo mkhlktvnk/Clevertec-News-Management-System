@@ -4,27 +4,27 @@ networks:
   backend:
 
 services:
-  resource-server:
-    build:
-      context: ./resource-server
-      dockerfile: Dockerfile
-    ports:
-      - "8080:8080"
-    depends_on:
-      - news_database
-      - redis
-      - config-server
-    networks:
-      - backend
+  #resource-server:
+  #  build:
+  #    context: ./resource-server
+  #    dockerfile: Dockerfile
+  #  ports:
+  #    - "8080:8080"
+  #  depends_on:
+  #    - news_database
+  #    - redis
+  #    - config-server
+  #  networks:
+  #    - backend
 
-  config-server:
-    build:
-      context: ./config-server
-      dockerfile: Dockerfile
-    ports:
-      - "8888:8888"
-    networks:
-      - backend
+  #config-server:
+  #  build:
+  #    context: ./config-server
+  #    dockerfile: Dockerfile
+  #  ports:
+  #    - "8888:8888"
+  #  networks:
+  #    - backend
 
   users_database:
     image: postgres:13.3

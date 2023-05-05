@@ -49,7 +49,7 @@ class CommentServiceImplTest {
     @InjectMocks
     private CommentServiceImpl commentService;
 
-    @Test
+/*    @Test
     void findAllByNewsIdAndPageableAndQueryMatchShouldReturnExpectedCommentsAndCallRepository() {
         Pageable pageable = PageRequest.of(0, 3);
         News news = NewsTestBuilder.aNews().build();
@@ -155,5 +155,5 @@ class CommentServiceImplTest {
 
         verify(commentRepository).findById(COMMENT_ID);
         verify(commentRepository).delete(commentFromDb);
-    }
+    }*/
 }

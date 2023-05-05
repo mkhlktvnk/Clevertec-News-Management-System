@@ -19,10 +19,7 @@ public class AuthResponse {
     @JsonProperty(value = "username", access = Access.READ_ONLY)
     private String username;
 
-    @JsonProperty(value = "password", access = Access.READ_ONLY)
-    private String password;
-
-    @JsonProperty(value = "authorities", access = Access.READ_ONLY)
-    private List<RoleModel> authorities;
+    @JsonProperty(value = "authorities")
+    private List<String> authorities;
 
 }
