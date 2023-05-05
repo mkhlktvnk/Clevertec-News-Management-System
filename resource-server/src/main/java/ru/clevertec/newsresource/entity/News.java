@@ -28,6 +28,9 @@ public class News implements Identifiable<Long> {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, updatable = false)
+    private String username;
+
     @CreationTimestamp
     @Column(nullable = false)
     private Instant time;
