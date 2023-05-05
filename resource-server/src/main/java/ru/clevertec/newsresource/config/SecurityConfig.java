@@ -1,5 +1,6 @@
 package ru.clevertec.newsresource.config;
 
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,15 +10,18 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import ru.clevertec.newsresource.filter.AuthFilter;
+import ru.clevertec.newsresource.security.entry.point.AuthEntryPoint;
+import ru.clevertec.newsresource.security.filter.AuthFilter;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
+    private final AuthFilter authFilter;
 
     @Bean
     @SneakyThrows
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, AuthFilter filter) {
+    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) {
         return httpSecurity.csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
@@ -29,7 +33,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.PATCH, "/api/v0/news/**").hasAnyRole("ADMIN", "JOURNALIST")
                 .requestMatchers(HttpMethod.DELETE, "/api/v0/news/**").hasAnyRole("ADMIN", "JOURNALIST")
                 .and()
-                .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 
