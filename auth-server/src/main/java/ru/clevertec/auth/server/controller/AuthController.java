@@ -20,16 +20,15 @@ public class AuthController {
         return ResponseEntity.ok(token);
     }
 
-    @GetMapping("/auth/validate")
-    public ResponseEntity<?> validate(@RequestHeader("Authorization") String token) {
-        return authService.isTokenValid(token) ? ResponseEntity.status(HttpStatus.OK).build() :
-                ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-    }
-
     @PostMapping("/auth/register")
     public ResponseEntity<AuthResponse> register(@RequestBody @Valid AuthRequest authRequest) {
         AuthResponse response = authService.register(authRequest);
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/auth/validate")
+    public ResponseEntity<?> validate(@RequestHeader("Authorization") String token) {
+        return authService.isTokenValid(token) ? ResponseEntity.status(HttpStatus.OK).build() :
+                ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    }
 }
