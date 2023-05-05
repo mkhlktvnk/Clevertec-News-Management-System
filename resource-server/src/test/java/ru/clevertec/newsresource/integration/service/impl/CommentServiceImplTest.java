@@ -5,8 +5,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.User;
 import ru.clevertec.exception.handling.starter.exception.ResourceNotFoundException;
 import ru.clevertec.newsresource.builder.impl.CommentTestBuilder;
+import ru.clevertec.newsresource.builder.impl.UserTestBuilder;
 import ru.clevertec.newsresource.entity.Comment;
 import ru.clevertec.newsresource.integration.BaseIntegrationTest;
 import ru.clevertec.newsresource.service.CommentService;
@@ -38,10 +40,10 @@ class CommentServiceImplTest extends BaseIntegrationTest {
     @Autowired
     private EntityManager entityManager;
 
-/*    @Test
+    @Test
     void findAllByNewsIdAndPageableAndQueryMatchShouldReturnExpectedCountOfComments() {
         Pageable pageable = PageRequest.of(0, 1);
-        String query = "I'm";
+        String query = "I totally agree";
 
         List<Comment> comments =
                 commentService.findAllByNewsIdAndPageableAndQueryMatch(CORRECT_NEWS_ID, pageable, query);
@@ -80,8 +82,9 @@ class CommentServiceImplTest extends BaseIntegrationTest {
                 .withText("New-comment-text")
                 .withUsername("User123")
                 .build();
+        User user = UserTestBuilder.anUser().withUsername("user1").build();
 
-        Comment actual = commentService.addCommentToNews(CORRECT_NEWS_ID, comment);
+        Comment actual = commentService.addCommentToNews(CORRECT_NEWS_ID, comment, user);
 
         assertThat(actual.getId()).isNotNull();
     }
@@ -92,8 +95,9 @@ class CommentServiceImplTest extends BaseIntegrationTest {
                 .withText("New-comment-text")
                 .withUsername("User123")
                 .build();
+        User user = UserTestBuilder.anUser().withUsername("user1").build();
 
-        assertThatThrownBy(() -> commentService.addCommentToNews(INCORRECT_NEWS_ID, comment))
+        assertThatThrownBy(() -> commentService.addCommentToNews(INCORRECT_NEWS_ID, comment, user))
                 .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessage(messagesSource.get(NewsMessageKey.NOT_FOUND_BY_ID, INCORRECT_NEWS_ID));
     }
@@ -102,8 +106,11 @@ class CommentServiceImplTest extends BaseIntegrationTest {
     void updateCommentPartiallyByIdShouldUpdateComment() {
         Comment updateComment = CommentTestBuilder.aComment()
                 .withText("new-comment-text").build();
+        User user = UserTestBuilder.anUser()
+                .withUsername("user2")
+                .build();
 
-        commentService.updateCommentPartiallyById(CORRECT_COMMENT_ID, updateComment);
+        commentService.updateCommentPartiallyById(CORRECT_COMMENT_ID, user, updateComment);
         entityManager.flush();
     }
 
@@ -111,22 +118,33 @@ class CommentServiceImplTest extends BaseIntegrationTest {
     void updateCommentPartiallyByIdShouldThrowResourceNotFoundException() {
         Comment updateComment = CommentTestBuilder.aComment()
                 .withText("new-comment-text").build();
+        User user = UserTestBuilder.anUser()
+                .withUsername("user2")
+                .build();
 
-        assertThatThrownBy(() -> commentService.updateCommentPartiallyById(INCORRECT_COMMENT_ID, updateComment))
+        assertThatThrownBy(() -> commentService.updateCommentPartiallyById(INCORRECT_COMMENT_ID, user, updateComment))
                 .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessage(messagesSource.get(CommentMessageKey.COMMENT_NOT_FOUND_BY_ID, INCORRECT_COMMENT_ID));
     }
 
     @Test
     void deleteCommentByIdShouldDeleteComment() {
-        commentService.deleteCommentById(CORRECT_COMMENT_ID);
+        User user = UserTestBuilder.anUser()
+                .withUsername("user2")
+                .build();
+
+        commentService.deleteCommentById(CORRECT_COMMENT_ID, user);
         entityManager.flush();
     }
 
     @Test
     void deleteCommentByIdShouldThrowResourceNotFoundException() {
-        assertThatThrownBy(() -> commentService.deleteCommentById(INCORRECT_COMMENT_ID))
+        User user = UserTestBuilder.anUser()
+                .withUsername("user2")
+                .build();
+
+        assertThatThrownBy(() -> commentService.deleteCommentById(INCORRECT_COMMENT_ID, user))
                 .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessage(messagesSource.get(CommentMessageKey.COMMENT_NOT_FOUND_BY_ID, INCORRECT_COMMENT_ID));
-    }*/
+    }
 }
