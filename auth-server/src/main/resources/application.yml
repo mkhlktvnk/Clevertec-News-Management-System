@@ -7,5 +7,6 @@ spring:
   liquibase:
     enabled: true
 jwt:
-  secret: K1hTl8OyGkzWq4e0s6rB7MvRtZiXuN2S9pDjJcExUfYgVwPaIb3A5nCQmFodl6EJkFQo9m5XxW2ZIAay3csUzuGpYbT4hD8VtH0R1P7vSOrNiBnqgCjMwKfV
+  privateKey: classpath:certs/private.pem
+  publicKey: classpath:certs/public.pem
   expiration: 60
