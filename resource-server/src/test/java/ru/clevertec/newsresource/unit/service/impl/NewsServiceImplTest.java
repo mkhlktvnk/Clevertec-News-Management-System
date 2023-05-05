@@ -9,10 +9,14 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.userdetails.User;
 import ru.clevertec.exception.handling.starter.exception.ResourceNotFoundException;
 import ru.clevertec.newsresource.builder.impl.NewsTestBuilder;
+import ru.clevertec.newsresource.builder.impl.UserTestBuilder;
 import ru.clevertec.newsresource.entity.News;
 import ru.clevertec.newsresource.repository.NewsRepository;
+import ru.clevertec.newsresource.service.impl.NewsPermissionService;
 import ru.clevertec.newsresource.service.impl.NewsServiceImpl;
 import ru.clevertec.newsresource.service.message.MessagesSource;
 import ru.clevertec.newsresource.service.message.key.NewsMessageKey;
@@ -38,6 +42,9 @@ class NewsServiceImplTest {
 
     @Mock
     private MessagesSource messagesSource;
+
+    @Mock
+    private NewsPermissionService newsPermissionService;
 
     @InjectMocks
     private NewsServiceImpl newsService;
@@ -82,9 +89,10 @@ class NewsServiceImplTest {
     @Test
     void saveNewsShouldReturnSavedNewsAndCallRepository() {
         News expectedNews = NewsTestBuilder.aNews().build();
+        User user = UserTestBuilder.anUser().withUsername("user-123").build();
         doReturn(expectedNews).when(newsRepository).save(expectedNews);
 
-        News actualNews = newsService.saveNews(expectedNews);
+        News actualNews = newsService.saveNews(expectedNews, user);
 
         verify(newsRepository).save(expectedNews);
         assertThat(actualNews).isEqualTo(expectedNews);
@@ -94,9 +102,11 @@ class NewsServiceImplTest {
     void updateNewsPartiallyByIdShouldCallRepository() {
         News updateNews = NewsTestBuilder.aNews().build();
         News newsFromDb = NewsTestBuilder.aNews().build();
+        User user = UserTestBuilder.anUser().withUsername("user-123").build();
         doReturn(Optional.of(newsFromDb)).when(newsRepository).findById(ID);
+        doReturn(true).when(newsPermissionService).userHasPermissionToEditResource(user, newsFromDb);
 
-        newsService.updateNewsPartiallyById(ID, updateNews);
+        newsService.updateNewsPartiallyById(ID, updateNews, user);
 
         verify(newsRepository).findById(ID);
         verify(newsRepository).save(newsFromDb);
@@ -105,19 +115,35 @@ class NewsServiceImplTest {
     @Test
     void updateNewsPartiallyByIdShouldThrowResourceNotFoundException() {
         News updateNews = NewsTestBuilder.aNews().build();
+        User user = UserTestBuilder.anUser().withUsername("user-123").build();
         doReturn(Optional.empty()).when(newsRepository).findById(ID);
 
-        assertThatThrownBy(() -> newsService.updateNewsPartiallyById(ID, updateNews))
+        assertThatThrownBy(() -> newsService.updateNewsPartiallyById(ID, updateNews, user))
                 .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessage(messagesSource.get(NewsMessageKey.NOT_FOUND_BY_ID, ID));
     }
 
     @Test
+    void updateNewsPartiallyByIdShouldThrowAccessDeniedException() {
+        News updateNews = NewsTestBuilder.aNews().build();
+        News newsFromDb = NewsTestBuilder.aNews().build();
+        User user = UserTestBuilder.anUser().withUsername("user-123").build();
+        doReturn(Optional.of(newsFromDb)).when(newsRepository).findById(ID);
+        doReturn(false).when(newsPermissionService).userHasPermissionToEditResource(user, newsFromDb);
+
+        assertThatThrownBy(() -> newsService.updateNewsPartiallyById(ID, updateNews, user))
+                .isInstanceOf(AccessDeniedException.class)
+                .hasMessage(messagesSource.get(NewsMessageKey.UNABLE_TO_EDIT));
+    }
+
+    @Test
     void deleteNewsByIdShouldCallRepository() {
         News newsFromDb = NewsTestBuilder.aNews().build();
+        User user = UserTestBuilder.anUser().withUsername("user-123").build();
         doReturn(Optional.of(newsFromDb)).when(newsRepository).findById(ID);
+        doReturn(true).when(newsPermissionService).userHasPermissionToEditResource(user, newsFromDb);
 
-        newsService.deleteNewsById(ID);
+        newsService.deleteNewsById(ID, user);
 
         verify(newsRepository).findById(ID);
         verify(newsRepository).delete(newsFromDb);
@@ -125,10 +151,23 @@ class NewsServiceImplTest {
 
     @Test
     void deleteNewsByIdShouldThrowResourceNotFoundException() {
+        User user = UserTestBuilder.anUser().withUsername("user-123").build();
         doReturn(Optional.empty()).when(newsRepository).findById(ID);
 
-        assertThatThrownBy(() -> newsService.deleteNewsById(ID))
+        assertThatThrownBy(() -> newsService.deleteNewsById(ID, user))
                 .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessage(messagesSource.get(NewsMessageKey.NOT_FOUND_BY_ID, ID));
+    }
+
+    @Test
+    void deleteNewsByIdShouldThrowAccessDeniedException() {
+        News newsFromDb = NewsTestBuilder.aNews().build();
+        User user = UserTestBuilder.anUser().withUsername("user-123").build();
+        doReturn(Optional.of(newsFromDb)).when(newsRepository).findById(ID);
+        doReturn(false).when(newsPermissionService).userHasPermissionToEditResource(user, newsFromDb);
+
+        assertThatThrownBy(() -> newsService.deleteNewsById(ID, user))
+                .isInstanceOf(AccessDeniedException.class)
+                .hasMessage(messagesSource.get(NewsMessageKey.UNABLE_TO_DELETE));
     }
 }
