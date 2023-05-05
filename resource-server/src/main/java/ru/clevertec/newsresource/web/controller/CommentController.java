@@ -178,12 +178,11 @@ public class CommentController {
             )
     })
     @Loggable
-    @PreAuthorize("hasAnyRole('ADMIN', 'SUBSCRIBER')")
-    @PostMapping("/news/{newsId}/comments")
+    @PostMapping("/comments")
     public ResponseEntity<CommentDto> addCommentToNews(
-            @PathVariable Long newsId, @RequestBody CommentDto comment, @AuthenticationPrincipal User user) {
+           @RequestBody CommentDto comment, @AuthenticationPrincipal User user) {
         Comment commentToInsert = commentMapper.toEntity(comment);
-        Comment insertedComment = commentService.addCommentToNews(newsId, commentToInsert, user);
+        Comment insertedComment = commentService.addCommentToNews(comment.getNewsId(), commentToInsert, user);
         return ResponseEntity.status(HttpStatus.CREATED).body(commentMapper.toDto(insertedComment));
     }
 
