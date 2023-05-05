@@ -17,6 +17,9 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 import ru.clevertec.exception.handling.starter.response.ErrorResponse;
 import ru.clevertec.logging.annotation.Loggable;
@@ -175,12 +178,13 @@ public class CommentController {
             )
     })
     @Loggable
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUBSCRIBER')")
     @PostMapping("/news/{newsId}/comments")
     public ResponseEntity<CommentDto> addCommentToNews(
-            @PathVariable Long newsId, @RequestBody CommentDto comment) {
-        Comment insertedComment = commentService.addCommentToNews(newsId, commentMapper.toEntity(comment));
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(commentMapper.toDto(insertedComment));
+            @PathVariable Long newsId, @RequestBody CommentDto comment, @AuthenticationPrincipal User user) {
+        Comment commentToInsert = commentMapper.toEntity(comment);
+        Comment insertedComment = commentService.addCommentToNews(newsId, commentToInsert, user);
+        return ResponseEntity.status(HttpStatus.CREATED).body(commentMapper.toDto(insertedComment));
     }
 
 
@@ -216,8 +220,9 @@ public class CommentController {
     @Loggable
     @PatchMapping("/comments/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updateCommentPartiallyById(@PathVariable Long id, @RequestBody CommentDto updateComment) {
-        commentService.updateCommentPartiallyById(id, commentMapper.toEntity(updateComment));
+    public void updateCommentPartiallyById(
+            @PathVariable Long id, @AuthenticationPrincipal User user, @RequestBody CommentDto updateComment) {
+        commentService.updateCommentPartiallyById(id, user, commentMapper.toEntity(updateComment));
     }
 
     @Operation(summary = "Delete comment by comment id")
@@ -246,7 +251,7 @@ public class CommentController {
     @Loggable
     @DeleteMapping("/comments/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteCommentById(@PathVariable Long id) {
-        commentService.deleteCommentById(id);
+    public void deleteCommentById(@PathVariable Long id, @AuthenticationPrincipal User user) {
+        commentService.deleteCommentById(id, user);
     }
 }

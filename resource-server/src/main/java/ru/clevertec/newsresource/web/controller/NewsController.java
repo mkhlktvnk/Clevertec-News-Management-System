@@ -18,6 +18,8 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 import ru.clevertec.exception.handling.starter.response.ErrorResponse;
 import ru.clevertec.logging.annotation.Loggable;
@@ -137,8 +139,8 @@ public class NewsController {
     )
     @Loggable
     @PostMapping("/news")
-    public ResponseEntity<NewsDto> saveNews(@RequestBody NewsDto news) {
-        News savedNews = newsService.saveNews(newsMapper.toEntity(news));
+    public ResponseEntity<NewsDto> saveNews(@RequestBody NewsDto news, @AuthenticationPrincipal User user) {
+        News savedNews = newsService.saveNews(newsMapper.toEntity(news), user);
         return ResponseEntity.status(HttpStatus.CREATED).body(newsMapper.toDto(savedNews));
     }
 
@@ -172,8 +174,9 @@ public class NewsController {
     @Loggable
     @PatchMapping("/news/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updateNewsPartiallyById(@PathVariable Long id, @RequestBody NewsDto updateNews) {
-        newsService.updateNewsPartiallyById(id, newsMapper.toEntity(updateNews));
+    public void updateNewsPartiallyById(
+            @PathVariable Long id, @RequestBody NewsDto updateNews, @AuthenticationPrincipal User user) {
+        newsService.updateNewsPartiallyById(id, newsMapper.toEntity(updateNews), user);
     }
 
     @Operation(summary = "Delete news by id")
@@ -206,7 +209,7 @@ public class NewsController {
     @Loggable
     @DeleteMapping("/news/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteNewsById(@PathVariable Long id) {
-        newsService.deleteNewsById(id);
+    public void deleteNewsById(@PathVariable Long id, @AuthenticationPrincipal User user) {
+        newsService.deleteNewsById(id, user);
     }
 }
