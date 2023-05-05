@@ -5,8 +5,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.User;
 import ru.clevertec.exception.handling.starter.exception.ResourceNotFoundException;
 import ru.clevertec.newsresource.builder.impl.NewsTestBuilder;
+import ru.clevertec.newsresource.builder.impl.UserTestBuilder;
 import ru.clevertec.newsresource.entity.News;
 import ru.clevertec.newsresource.integration.BaseIntegrationTest;
 import ru.clevertec.newsresource.service.NewsService;
@@ -23,7 +25,7 @@ class NewsServiceImplTest extends BaseIntegrationTest {
 
     public static final Long INCORRECT_NEWS_ID = 30L;
 
-    public static final String CORRECT_QUERY = "SpaceX";
+    public static final String CORRECT_QUERY = "study";
 
     public static final String INCORRECT_QUERY = "Query that will not find anything";
 
@@ -70,12 +72,15 @@ class NewsServiceImplTest extends BaseIntegrationTest {
 
     @Test
     void saveNewsShouldReturnNewsWithNotNullId() {
+        User user = UserTestBuilder.anUser()
+                .withUsername("user-123")
+                .build();
         News news = NewsTestBuilder.aNews()
                 .withTitle("New-title")
                 .withText("New-text")
                 .build();
 
-        News actual = newsService.saveNews(news);
+        News actual = newsService.saveNews(news, user);
 
         assertThat(actual.getId()).isNotNull();
     }
@@ -84,8 +89,9 @@ class NewsServiceImplTest extends BaseIntegrationTest {
     void updateNewsPartiallyByIdShouldUpdateNews() {
         News updateNews = NewsTestBuilder.aNews()
                 .withTitle("new-title").build();
+        User user = UserTestBuilder.anUser().withUsername("user1").build();
 
-        newsService.updateNewsPartiallyById(CORRECT_NEWS_ID, updateNews);
+        newsService.updateNewsPartiallyById(CORRECT_NEWS_ID, updateNews, user);
         entityManager.flush();
     }
 
@@ -93,21 +99,26 @@ class NewsServiceImplTest extends BaseIntegrationTest {
     void updateNewsPartiallyByIdShouldThrowResourceNotFoundException() {
         News updateNews = NewsTestBuilder.aNews()
                 .withTitle("new-title").build();
+        User user = UserTestBuilder.anUser().withUsername("user1").build();
 
-        assertThatThrownBy(() -> newsService.updateNewsPartiallyById(INCORRECT_NEWS_ID, updateNews))
+        assertThatThrownBy(() -> newsService.updateNewsPartiallyById(INCORRECT_NEWS_ID, updateNews, user))
                 .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessage(messagesSource.get(NewsMessageKey.NOT_FOUND_BY_ID, INCORRECT_NEWS_ID));
     }
 
     @Test
     void deleteNewsByIdShouldDeleteNews() {
-        newsService.deleteNewsById(CORRECT_NEWS_ID);
+        User user = UserTestBuilder.anUser().withUsername("user1").build();
+
+        newsService.deleteNewsById(CORRECT_NEWS_ID, user);
         entityManager.flush();
     }
 
     @Test
     void deleteNewsByIdShouldThrowResourceNotFoundException() {
-        assertThatThrownBy(() -> newsService.deleteNewsById(INCORRECT_NEWS_ID))
+        User user = UserTestBuilder.anUser().withUsername("user1").build();
+
+        assertThatThrownBy(() -> newsService.deleteNewsById(INCORRECT_NEWS_ID, user))
                 .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessage(messagesSource.get(NewsMessageKey.NOT_FOUND_BY_ID, INCORRECT_NEWS_ID));
     }
