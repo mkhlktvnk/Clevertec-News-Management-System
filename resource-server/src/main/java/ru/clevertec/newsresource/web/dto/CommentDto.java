@@ -51,6 +51,10 @@ public class CommentDto {
     @JsonProperty(value = "text")
     private String text;
 
+    @Schema(
+            description = "News id to add to comment",
+            example = "1"
+    )
     @NotNull
     @Positive
     @JsonProperty(value = "newsId")
