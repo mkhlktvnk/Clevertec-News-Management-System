@@ -5,20 +5,16 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import org.springframework.boot.actuate.endpoint.SecurityContext;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 import ru.clevertec.newsresource.client.AuthServerClient;
-import ru.clevertec.newsresource.web.dto.AuthResponseDto;
-
-import java.util.List;
+import ru.clevertec.newsresource.service.TokenService;
 
 @Component
 @RequiredArgsConstructor
@@ -27,6 +23,7 @@ public class AuthFilter extends OncePerRequestFilter {
     private static final String BEARER = "Bearer ";
 
     private final AuthServerClient authServerClient;
+    private final TokenService tokenService;
 
     @Override
     @SneakyThrows
@@ -34,15 +31,12 @@ public class AuthFilter extends OncePerRequestFilter {
             HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)  {
         String token = getTokenFromRequest(request);
         if (token != null) {
-            AuthResponseDto authResponse = authServerClient.validate("Bearer " + token);
-            if (authResponse != null) {
-                List<SimpleGrantedAuthority> authorities = authResponse.getAuthorities().stream()
-                        .map(authority -> new SimpleGrantedAuthority("ROLE_" + authority))
-                        .toList();
-                UserDetails details = new User(authResponse.getUsername(), "", authorities);
-                UsernamePasswordAuthenticationToken auth =
-                        new UsernamePasswordAuthenticationToken(details, null, authorities);
-                SecurityContextHolder.getContext().setAuthentication(auth);
+            ResponseEntity<?> validationResponse = authServerClient.validate(BEARER + token);
+            if (validationResponse.getStatusCode().isSameCodeAs(HttpStatus.OK)) {
+                User user = tokenService.getUserInfoFromToken(token);
+                UsernamePasswordAuthenticationToken authenticationToken =
+                        new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
             }
         }
         filterChain.doFilter(request, response);
