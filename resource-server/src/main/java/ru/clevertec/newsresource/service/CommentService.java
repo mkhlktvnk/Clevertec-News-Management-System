@@ -1,6 +1,7 @@
 package ru.clevertec.newsresource.service;
 
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.User;
 import ru.clevertec.newsresource.entity.Comment;
 
 import java.util.List;
@@ -10,9 +11,9 @@ public interface CommentService {
 
     Comment findById(Long commentId);
 
-    Comment addCommentToNews(Long newsId, Comment comment);
+    Comment addCommentToNews(Long newsId, Comment comment, User user);
 
-    void updateCommentPartiallyById(Long commentId, Comment updateComment);
+    void updateCommentPartiallyById(Long commentId, User user, Comment updateComment);
 
-    void deleteCommentById(Long commentId);
+    void deleteCommentById(Long commentId, User user);
 }

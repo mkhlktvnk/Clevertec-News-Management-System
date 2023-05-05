@@ -7,6 +7,9 @@ import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.clevertec.exception.handling.starter.exception.ResourceNotFoundException;
@@ -16,6 +19,7 @@ import ru.clevertec.newsresource.entity.News;
 import ru.clevertec.newsresource.repository.CommentRepository;
 import ru.clevertec.newsresource.repository.NewsRepository;
 import ru.clevertec.newsresource.service.CommentService;
+import ru.clevertec.newsresource.service.PermissionService;
 import ru.clevertec.newsresource.service.message.MessagesSource;
 import ru.clevertec.newsresource.service.message.key.CommentMessageKey;
 import ru.clevertec.newsresource.service.message.key.NewsMessageKey;
@@ -31,6 +35,7 @@ public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
     private final NewsRepository newsRepository;
     private final MessagesSource messagesSource;
+    private final PermissionService<User, Comment> permissionService;
     private final CommentMapper commentMapper = Mappers.getMapper(CommentMapper.class);
 
     @Override
@@ -63,11 +68,12 @@ public class CommentServiceImpl implements CommentService {
     @Loggable
     @Transactional
     @CachePut(value = "comment", key = "#result.id")
-    public Comment addCommentToNews(Long newsId, Comment comment) {
+    public Comment addCommentToNews(Long newsId, Comment comment, User user) {
         News news = newsRepository.findById(newsId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         messagesSource.get(NewsMessageKey.NOT_FOUND_BY_ID, newsId)
                 ));
+        comment.setUsername(user.getUsername());
         comment.setNews(news);
         return commentRepository.save(comment);
     }
@@ -76,11 +82,16 @@ public class CommentServiceImpl implements CommentService {
     @Loggable
     @Transactional
     @CachePut(value = "comment", key = "#commentId")
-    public void updateCommentPartiallyById(Long commentId, Comment updateComment) {
+    public void updateCommentPartiallyById(Long commentId, User user, Comment updateComment) {
         Comment commentToUpdate = commentRepository.findById(commentId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         messagesSource.get(CommentMessageKey.COMMENT_NOT_FOUND_BY_ID, commentId)
                 ));
+
+        if (!permissionService.userHasPermissionToEditResource(user, commentToUpdate)) {
+            throw new AccessDeniedException(messagesSource.get(CommentMessageKey.UNABLE_TO_EDIT));
+        }
+
         commentMapper.mapNotNullFields(commentToUpdate, updateComment);
         commentRepository.save(commentToUpdate);
     }
@@ -89,11 +100,16 @@ public class CommentServiceImpl implements CommentService {
     @Loggable
     @Transactional
     @CacheEvict(value = "comment", key = "#commentId")
-    public void deleteCommentById(Long commentId) {
+    public void deleteCommentById(Long commentId, User user) {
         Comment commentToDelete = commentRepository.findById(commentId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         messagesSource.get(CommentMessageKey.COMMENT_NOT_FOUND_BY_ID, commentId)
                 ));
+
+        if (!permissionService.userHasPermissionToEditResource(user, commentToDelete)) {
+            throw new AccessDeniedException(messagesSource.get(CommentMessageKey.UNABLE_TO_DELETE));
+        }
+
         commentRepository.delete(commentToDelete);
     }
 }
