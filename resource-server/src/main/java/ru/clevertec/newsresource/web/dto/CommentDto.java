@@ -38,7 +38,7 @@ public class CommentDto {
     )
     @NotBlank
     @Size(min = 1)
-    @JsonProperty(value = "username")
+    @JsonProperty(value = "username", access = JsonProperty.Access.READ_ONLY)
     private String username;
 
     @Schema(
