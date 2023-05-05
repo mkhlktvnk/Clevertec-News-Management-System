@@ -26,6 +26,14 @@ public class NewsDto {
     private Long id;
 
     @Schema(
+            name = "username",
+            description = "Username of user who posted this news",
+            example = "JohnSmith"
+    )
+    @JsonProperty(value = "username", access = JsonProperty.Access.READ_ONLY)
+    private String username;
+
+    @Schema(
             name = "time",
             description = "Time when news was posted",
             example = "2023-04-28T22:42:29.950354Z"
