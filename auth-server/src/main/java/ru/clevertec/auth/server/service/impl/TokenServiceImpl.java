@@ -1,9 +1,10 @@
 package ru.clevertec.auth.server.service.impl;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 import ru.clevertec.auth.server.properties.JwtProperties;
 import ru.clevertec.auth.server.service.TokenService;
@@ -13,27 +14,27 @@ import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Collection;
 import java.util.Date;
-
-import static org.springframework.util.StringUtils.hasText;
 
 @Service
 @RequiredArgsConstructor
 public class TokenServiceImpl implements TokenService {
-    private static final String AUTHORIZATION = "Authorization";
-    private static final String BEARER = "Bearer ";
-
     private final JwtProperties properties;
 
     @Override
-    public String generateToken(String username) {
+    public String generateToken(String username, Collection<? extends GrantedAuthority> roles) {
         Date date = Date.from(LocalDateTime.now().plusMinutes(properties.getExpiration())
                 .atZone(ZoneId.systemDefault()).toInstant());
 
+        Claims claims = generateClaims(username, roles);
+        Key signingKey = generateSigningKeyBasedOnPrivateKey();
+
         return Jwts.builder()
                 .setSubject(username)
+                .setClaims(claims)
                 .setExpiration(date)
-                .signWith(generateSigningKey(), SignatureAlgorithm.HS512)
+                .signWith(signingKey, SignatureAlgorithm.HS512)
                 .compact();
     }
 
@@ -41,7 +42,7 @@ public class TokenServiceImpl implements TokenService {
     public boolean isTokenValid(String token) {
         try {
             Jwts.parserBuilder()
-                    .setSigningKey(generateSigningKey())
+                    .setSigningKey(generateSigningKeyBasedOnPrivateKey())
                     .build()
                     .parseClaimsJws(token);
         } catch (Exception e) {
@@ -50,28 +51,15 @@ public class TokenServiceImpl implements TokenService {
         return true;
     }
 
-    @Override
-    public String getLoginFromToken(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(generateSigningKey())
-                .build()
-                .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
+    private Claims generateClaims(String username, Collection<? extends GrantedAuthority> roles) {
+        Claims claims = Jwts.claims();
+        claims.put("username", username);
+        claims.put("roles", roles);
+        return claims;
     }
 
-    @Override
-    public String getTokenFromRequest(HttpServletRequest request) {
-        String bearer = request.getHeader(AUTHORIZATION);
-        if (hasText(bearer) && bearer.startsWith(BEARER)) {
-            return bearer.substring(7);
-        }
-        return null;
-    }
-
-    private Key generateSigningKey() {
-        byte[] keyBytes = properties.getSecret().getBytes(StandardCharsets.UTF_8);
+    private Key generateSigningKeyBasedOnPrivateKey() {
+        byte[] keyBytes = properties.getPrivateKey().getBytes(StandardCharsets.UTF_8);
         return new SecretKeySpec(keyBytes, SignatureAlgorithm.HS512.getJcaName());
     }
-
 }
