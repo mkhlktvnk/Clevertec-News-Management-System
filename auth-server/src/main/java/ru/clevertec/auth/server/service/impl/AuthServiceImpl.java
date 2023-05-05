@@ -1,12 +1,11 @@
 package ru.clevertec.auth.server.service.impl;
 
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.mapstruct.factory.Mappers;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
-import ru.clevertec.auth.server.entity.Role;
 import ru.clevertec.auth.server.entity.User;
 import ru.clevertec.auth.server.mapper.UserMapper;
 import ru.clevertec.auth.server.model.AuthRequest;
@@ -14,9 +13,6 @@ import ru.clevertec.auth.server.model.AuthResponse;
 import ru.clevertec.auth.server.service.AuthService;
 import ru.clevertec.auth.server.service.TokenService;
 import ru.clevertec.auth.server.service.UserService;
-import ru.clevertec.exception.handling.starter.exception.AuthenticationException;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -28,10 +24,10 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public String authenticate(AuthRequest request) {
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                request.getUsername(), request.getPassword()));
-
-        return tokenService.generateToken(request.getUsername());
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
+        );
+        return tokenService.generateToken(authentication.getName(), authentication.getAuthorities());
     }
 
     @Override
@@ -42,20 +38,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public AuthResponse validate(HttpServletRequest request) {
-        String jwt = tokenService.getTokenFromRequest(request);
-        if (!tokenService.isTokenValid(jwt)) {
-            throw new AuthenticationException("");
-        }
-
-        String username = tokenService.getLoginFromToken(jwt);
-        User user = (User) userService.loadUserByUsername(username);
-/*        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                user.getUsername(), user.getPassword()));*/
-
-        AuthResponse response = mapper.mapToModel(user);
-        List<String> authorities = user.getAuthorities().stream().map(Role::getAuthority).toList();
-        response.setAuthorities(authorities);
-        return response;
+    public Boolean isTokenValid(String token) {
+        return tokenService.isTokenValid(token);
     }
 }
