@@ -51,6 +51,7 @@ dependencies {
 
     runtimeOnly 'org.postgresql:postgresql'
 
+    testImplementation 'com.github.tomakehurst:wiremock:3.0.0-beta-8'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.mapstruct:mapstruct:1.5.5.Final'
     testImplementation "org.testcontainers:postgresql:1.18.0"
