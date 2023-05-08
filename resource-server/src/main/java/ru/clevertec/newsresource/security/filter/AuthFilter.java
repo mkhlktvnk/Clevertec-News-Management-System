@@ -14,13 +14,12 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 import ru.clevertec.newsresource.client.AuthServerClient;
+import ru.clevertec.newsresource.security.constant.AuthConstant;
 import ru.clevertec.newsresource.service.TokenService;
 
 @Component
 @RequiredArgsConstructor
 public class AuthFilter extends OncePerRequestFilter {
-    private static final String AUTHORIZATION = "Authorization";
-    private static final String BEARER = "Bearer ";
 
     private final AuthServerClient authServerClient;
     private final TokenService tokenService;
@@ -31,7 +30,7 @@ public class AuthFilter extends OncePerRequestFilter {
             HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)  {
         String token = getTokenFromRequest(request);
         if (token != null) {
-            ResponseEntity<?> validationResponse = authServerClient.validate(BEARER + token);
+            ResponseEntity<?> validationResponse = authServerClient.validate(AuthConstant.BEARER + token);
             if (validationResponse.getStatusCode().isSameCodeAs(HttpStatus.OK)) {
                 User user = tokenService.getUserInfoFromToken(token);
                 UsernamePasswordAuthenticationToken authenticationToken =
@@ -43,8 +42,8 @@ public class AuthFilter extends OncePerRequestFilter {
     }
 
     private String getTokenFromRequest(HttpServletRequest request) {
-        String bearer = request.getHeader(AUTHORIZATION);
-        if (StringUtils.hasText(bearer) && bearer.startsWith(BEARER)) {
+        String bearer = request.getHeader(AuthConstant.AUTHORIZATION);
+        if (StringUtils.hasText(bearer) && bearer.startsWith(AuthConstant.BEARER)) {
             return bearer.substring(7);
         }
         return null;
