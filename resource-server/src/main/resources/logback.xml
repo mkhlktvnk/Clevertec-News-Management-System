@@ -1,0 +1,25 @@
+<configuration>
+
+    <root level="INFO">
+        <appender-ref ref="STDOUT"/>
+    </root>
+
+    <logger name="ru.clevertec.newsresource.web.controller" level="DEBUG">
+        <appender-ref ref="STDOUT"/>
+    </logger>
+
+    <logger name="ru.clevertec.newsresource.service" level="INFO">
+        <appender-ref ref="STDOUT"/>
+    </logger>
+
+    <logger name="ru.clevertec.newsresource.repository" level="WARN">
+        <appender-ref ref="STDOUT"/>
+    </logger>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+</configuration>
