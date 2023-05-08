@@ -18,16 +18,17 @@ import ru.clevertec.newsresource.builder.impl.CommentDtoTestBuilder;
 import ru.clevertec.newsresource.builder.impl.UserTestBuilder;
 import ru.clevertec.newsresource.integration.BaseIntegrationTest;
 import ru.clevertec.newsresource.integration.WireMockExtension;
+import ru.clevertec.newsresource.security.constant.AuthConstant;
 import ru.clevertec.newsresource.service.TokenService;
 import ru.clevertec.newsresource.web.dto.CommentDto;
 
 import java.util.List;
 
-import static org.mockito.Mockito.doReturn;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
+import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -87,14 +88,14 @@ class CommentControllerTest extends BaseIntegrationTest {
                 .withText("New comment")
                 .build();
         stubFor(WireMock.get(urlEqualTo("/auth/validate"))
-                .withHeader("Authorization", equalTo("Bearer " + token))
+                .withHeader(AuthConstant.AUTHORIZATION, equalTo(AuthConstant.BEARER + token))
                 .willReturn(aResponse().withStatus(HttpStatus.OK.value())));
         doReturn(user).when(tokenService).getUserInfoFromToken(token);
 
         mockMvc.perform(post("/api/v0/comments")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(commentDto))
-                        .header("Authorization", "Bearer " + token))
+                        .header(AuthConstant.AUTHORIZATION, AuthConstant.BEARER + token))
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id").isNotEmpty());
@@ -113,14 +114,14 @@ class CommentControllerTest extends BaseIntegrationTest {
                 .withText("New comment name")
                 .build();
         stubFor(WireMock.get(urlEqualTo("/auth/validate"))
-                .withHeader("Authorization", equalTo("Bearer " + token))
+                .withHeader(AuthConstant.AUTHORIZATION, equalTo(AuthConstant.BEARER + token))
                 .willReturn(aResponse().withStatus(HttpStatus.OK.value())));
         doReturn(user).when(tokenService).getUserInfoFromToken(token);
 
         mockMvc.perform(patch("/api/v0/comments")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(commentDto))
-                        .header("Authorization", "Bearer " + token))
+                        .header(AuthConstant.AUTHORIZATION, AuthConstant.BEARER + token))
                 .andExpect(status().isNoContent())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
@@ -135,7 +136,7 @@ class CommentControllerTest extends BaseIntegrationTest {
                 .build();
 
         stubFor(WireMock.get(urlEqualTo("/auth/validate"))
-                .withHeader("Authorization", equalTo("Bearer " + token))
+                .withHeader(AuthConstant.AUTHORIZATION, equalTo(AuthConstant.BEARER + token))
                 .willReturn(aResponse().withStatus(HttpStatus.OK.value())));
         doReturn(user).when(tokenService).getUserInfoFromToken(token);
 
