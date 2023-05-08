@@ -9,7 +9,6 @@ import ru.clevertec.auth.server.model.AuthResponse;
 @Mapper
 public interface UserMapper {
 
-    @Mapping(target = "authorities", ignore = true)
     AuthResponse mapToModel(User user);
 
     User mapToEntity(AuthRequest model);

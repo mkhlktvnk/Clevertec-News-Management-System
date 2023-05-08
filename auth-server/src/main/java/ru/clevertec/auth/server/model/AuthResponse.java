@@ -19,7 +19,4 @@ public class AuthResponse {
     @JsonProperty(value = "username", access = Access.READ_ONLY)
     private String username;
 
-    @JsonProperty(value = "authorities")
-    private List<String> authorities;
-
 }
