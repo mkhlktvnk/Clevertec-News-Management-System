@@ -39,4 +39,16 @@ class LFUCacheTest {
         assertThat(value).isEmpty();
     }
 
+    @Test
+    void evictShouldRemoveEntry() {
+        Cache<String, Object> cache = new LFUCache(2);
+
+        cache.put("key-1", CACHE_NAME, "value-1");
+        cache.put("key-2", CACHE_NAME, "value-2");
+        cache.evict("key-1", CACHE_NAME);
+        Optional<Object> value = cache.get("key-1", CACHE_NAME);
+
+        assertThat(value).isEmpty();
+    }
+
 }
