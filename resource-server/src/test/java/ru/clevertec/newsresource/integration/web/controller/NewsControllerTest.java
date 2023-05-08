@@ -18,6 +18,7 @@ import ru.clevertec.newsresource.builder.impl.NewsDtoTestBuilder;
 import ru.clevertec.newsresource.builder.impl.UserTestBuilder;
 import ru.clevertec.newsresource.integration.BaseIntegrationTest;
 import ru.clevertec.newsresource.integration.WireMockExtension;
+import ru.clevertec.newsresource.security.constant.AuthConstant;
 import ru.clevertec.newsresource.service.TokenService;
 import ru.clevertec.newsresource.web.dto.NewsDto;
 
@@ -85,14 +86,14 @@ class NewsControllerTest extends BaseIntegrationTest {
                 .withText("New text")
                 .build();
         stubFor(WireMock.get(urlEqualTo("/auth/validate"))
-                .withHeader("Authorization", equalTo("Bearer " + token))
+                .withHeader(AuthConstant.AUTHORIZATION, equalTo(AuthConstant.BEARER + token))
                 .willReturn(aResponse().withStatus(HttpStatus.OK.value())));
         doReturn(user).when(tokenService).getUserInfoFromToken(token);
 
         mockMvc.perform(post("/api/v0/news")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(newsDto))
-                        .header("Authorization", "Bearer " + token))
+                        .header(AuthConstant.AUTHORIZATION, AuthConstant.BEARER + token))
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id").isNotEmpty());
@@ -111,14 +112,14 @@ class NewsControllerTest extends BaseIntegrationTest {
                 .withText("New text")
                 .build();
         stubFor(WireMock.get(urlEqualTo("/auth/validate"))
-                .withHeader("Authorization", equalTo("Bearer " + token))
+                .withHeader(AuthConstant.AUTHORIZATION, equalTo(AuthConstant.BEARER + token))
                 .willReturn(aResponse().withStatus(HttpStatus.OK.value())));
         doReturn(user).when(tokenService).getUserInfoFromToken(token);
 
         mockMvc.perform(patch("/api/v0/news/" + NEWS_ID)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(newsDto))
-                        .header("Authorization", "Bearer " + token))
+                        .header(AuthConstant.AUTHORIZATION, AuthConstant.BEARER + token))
                 .andExpect(status().isNoContent())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
@@ -132,13 +133,13 @@ class NewsControllerTest extends BaseIntegrationTest {
                 .withRoles(List.of(new SimpleGrantedAuthority("ADMIN")))
                 .build();
         stubFor(WireMock.get(urlEqualTo("/auth/validate"))
-                .withHeader("Authorization", equalTo("Bearer " + token))
+                .withHeader(AuthConstant.AUTHORIZATION, equalTo(AuthConstant.BEARER + token))
                 .willReturn(aResponse().withStatus(HttpStatus.OK.value())));
         doReturn(user).when(tokenService).getUserInfoFromToken(token);
 
         mockMvc.perform(delete("/api/v0/news/" + NEWS_ID)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .header("Authorization", "Bearer " + token))
+                        .header(AuthConstant.AUTHORIZATION, AuthConstant.BEARER + token))
                 .andExpect(status().isNoContent())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
