@@ -1,6 +1,10 @@
 package ru.clevertec.newsresource.web.mapper;
 
-import org.mapstruct.*;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
+import org.mapstruct.Mappings;
+import org.mapstruct.NullValuePropertyMappingStrategy;
 import ru.clevertec.newsresource.entity.News;
 import ru.clevertec.newsresource.web.dto.NewsDto;
 
