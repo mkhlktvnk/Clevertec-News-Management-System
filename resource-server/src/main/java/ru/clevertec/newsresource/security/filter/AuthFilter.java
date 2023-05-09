@@ -30,7 +30,7 @@ public class AuthFilter extends OncePerRequestFilter {
             HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)  {
         String token = getTokenFromRequest(request);
         if (token != null) {
-            ResponseEntity<?> validationResponse = authServerClient.validate(AuthConstant.BEARER + token);
+            ResponseEntity<?> validationResponse = authServerClient.validate(token);
             if (validationResponse.getStatusCode().isSameCodeAs(HttpStatus.OK)) {
                 User user = tokenService.getUserInfoFromToken(token);
                 UsernamePasswordAuthenticationToken authenticationToken =
