@@ -32,7 +32,7 @@ public class AuthController {
 
     @GetMapping("/auth/validate")
     public ResponseEntity<?> validate(@RequestHeader("Authorization") String token) {
-        return authService.isTokenValid(token.substring(7)) ? ResponseEntity.status(HttpStatus.OK).build() :
+        return authService.isTokenValid(token) ? ResponseEntity.status(HttpStatus.OK).build() :
                 ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 }
