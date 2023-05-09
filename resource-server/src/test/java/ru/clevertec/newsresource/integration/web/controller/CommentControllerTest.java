@@ -81,14 +81,14 @@ class CommentControllerTest extends BaseIntegrationTest {
         User user = UserTestBuilder.anUser()
                 .withUsername("user123")
                 .withPassword("password")
-                .withRoles(List.of(new SimpleGrantedAuthority("ADMIN")))
+                .withRoles(List.of(new SimpleGrantedAuthority("ROLE_ADMIN")))
                 .build();
         CommentDto commentDto = CommentDtoTestBuilder.aCommentDto()
                 .withNewsId(1L)
                 .withText("New comment")
                 .build();
         stubFor(WireMock.get(urlEqualTo("/auth/validate"))
-                .withHeader(AuthConstant.AUTHORIZATION, equalTo(AuthConstant.BEARER + token))
+                .withHeader(AuthConstant.AUTHORIZATION, equalTo(token))
                 .willReturn(aResponse().withStatus(HttpStatus.OK.value())));
         doReturn(user).when(tokenService).getUserInfoFromToken(token);
 
@@ -107,23 +107,22 @@ class CommentControllerTest extends BaseIntegrationTest {
         String token = "token";
         User user = UserTestBuilder.anUser()
                 .withUsername("user123")
-                .withRoles(List.of(new SimpleGrantedAuthority("ADMIN")))
+                .withRoles(List.of(new SimpleGrantedAuthority("ROLE_ADMIN")))
                 .build();
         CommentDto commentDto = CommentDtoTestBuilder.aCommentDto()
                 .withNewsId(1L)
                 .withText("New comment name")
                 .build();
         stubFor(WireMock.get(urlEqualTo("/auth/validate"))
-                .withHeader(AuthConstant.AUTHORIZATION, equalTo(AuthConstant.BEARER + token))
+                .withHeader(AuthConstant.AUTHORIZATION, equalTo(token))
                 .willReturn(aResponse().withStatus(HttpStatus.OK.value())));
         doReturn(user).when(tokenService).getUserInfoFromToken(token);
 
-        mockMvc.perform(patch("/api/v0/comments")
+        mockMvc.perform(patch("/api/v0/comments/" + COMMENT_ID)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(commentDto))
                         .header(AuthConstant.AUTHORIZATION, AuthConstant.BEARER + token))
-                .andExpect(status().isNoContent())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+                .andExpect(status().isNoContent());
     }
 
     @Test
@@ -132,15 +131,16 @@ class CommentControllerTest extends BaseIntegrationTest {
         String token = "token";
         User user = UserTestBuilder.anUser()
                 .withUsername("user123")
-                .withRoles(List.of(new SimpleGrantedAuthority("ADMIN")))
+                .withRoles(List.of(new SimpleGrantedAuthority("ROLE_ADMIN")))
                 .build();
 
         stubFor(WireMock.get(urlEqualTo("/auth/validate"))
-                .withHeader(AuthConstant.AUTHORIZATION, equalTo(AuthConstant.BEARER + token))
+                .withHeader(AuthConstant.AUTHORIZATION, equalTo(token))
                 .willReturn(aResponse().withStatus(HttpStatus.OK.value())));
         doReturn(user).when(tokenService).getUserInfoFromToken(token);
 
-        mockMvc.perform(delete("/api/v0/comments/" + COMMENT_ID))
+        mockMvc.perform(delete("/api/v0/comments/" + COMMENT_ID)
+                        .header(AuthConstant.AUTHORIZATION, AuthConstant.BEARER + token))
                 .andExpect(status().isNoContent());
     }
 }
