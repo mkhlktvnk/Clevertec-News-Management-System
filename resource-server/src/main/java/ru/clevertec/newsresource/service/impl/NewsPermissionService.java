@@ -11,7 +11,7 @@ public class NewsPermissionService implements PermissionService<User, News> {
 
     @Override
     public boolean userHasPermissionToEditResource(User user, News resource) {
-        boolean isAdmin = user.getAuthorities().contains(new SimpleGrantedAuthority("ADMIN"));
+        boolean isAdmin = user.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"));
         boolean isNewsBelongsToUser = resource.getUsername().equals(user.getUsername());
 
         return  isAdmin || isNewsBelongsToUser;

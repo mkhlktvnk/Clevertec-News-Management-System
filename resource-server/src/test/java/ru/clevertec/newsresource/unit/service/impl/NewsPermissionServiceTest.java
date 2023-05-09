@@ -36,7 +36,7 @@ class NewsPermissionServiceTest {
                 .build();
         User user = UserTestBuilder.anUser()
                 .withUsername("user-2")
-                .withRoles(List.of(new SimpleGrantedAuthority("ADMIN")))
+                .withRoles(List.of(new SimpleGrantedAuthority("ROLE_ADMIN")))
                 .build();
 
         assertThat(newsPermissionService.userHasPermissionToEditResource(user, news))
