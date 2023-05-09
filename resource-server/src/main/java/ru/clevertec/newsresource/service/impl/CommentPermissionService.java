@@ -11,7 +11,7 @@ public class CommentPermissionService implements PermissionService<User, Comment
 
     @Override
     public boolean userHasPermissionToEditResource(User user, Comment resource) {
-        boolean isAdmin = user.getAuthorities().contains(new SimpleGrantedAuthority("ADMIN"));
+        boolean isAdmin = user.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"));
         boolean isCommentBelongsToUser = resource.getUsername().equals(user.getUsername());
 
         return isAdmin || isCommentBelongsToUser;
