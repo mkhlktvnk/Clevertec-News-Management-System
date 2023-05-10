@@ -1,4 +1,4 @@
-package ru.clevertec.auth.server.controller;
+package ru.clevertec.auth.server.web.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
-import ru.clevertec.auth.server.model.AuthRequest;
-import ru.clevertec.auth.server.model.AuthResponse;
+import ru.clevertec.auth.server.web.model.AuthRequest;
+import ru.clevertec.auth.server.web.model.AuthResponse;
 import ru.clevertec.auth.server.service.AuthService;
 
 @RestController

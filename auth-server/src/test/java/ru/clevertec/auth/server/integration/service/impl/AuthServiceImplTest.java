@@ -3,8 +3,8 @@ package ru.clevertec.auth.server.integration.service.impl;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.clevertec.auth.server.integration.BaseIntegrationTest;
-import ru.clevertec.auth.server.model.AuthRequest;
-import ru.clevertec.auth.server.model.AuthResponse;
+import ru.clevertec.auth.server.web.model.AuthRequest;
+import ru.clevertec.auth.server.web.model.AuthResponse;
 import ru.clevertec.auth.server.service.AuthService;
 
 import static org.assertj.core.api.Assertions.assertThat;

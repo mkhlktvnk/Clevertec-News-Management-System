@@ -1,10 +1,9 @@
-package ru.clevertec.auth.server.mapper;
+package ru.clevertec.auth.server.web.mapper;
 
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import ru.clevertec.auth.server.entity.User;
-import ru.clevertec.auth.server.model.AuthRequest;
-import ru.clevertec.auth.server.model.AuthResponse;
+import ru.clevertec.auth.server.web.model.AuthRequest;
+import ru.clevertec.auth.server.web.model.AuthResponse;
 
 @Mapper
 public interface UserMapper {

@@ -7,9 +7,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import ru.clevertec.auth.server.controller.AuthController;
-import ru.clevertec.auth.server.model.AuthRequest;
-import ru.clevertec.auth.server.model.AuthResponse;
+import ru.clevertec.auth.server.web.controller.AuthController;
+import ru.clevertec.auth.server.web.model.AuthRequest;
+import ru.clevertec.auth.server.web.model.AuthResponse;
 import ru.clevertec.auth.server.service.AuthService;
 
 import static org.assertj.core.api.Assertions.assertThat;

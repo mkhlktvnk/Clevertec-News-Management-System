@@ -7,9 +7,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import ru.clevertec.auth.server.entity.User;
-import ru.clevertec.auth.server.mapper.UserMapper;
-import ru.clevertec.auth.server.model.AuthRequest;
-import ru.clevertec.auth.server.model.AuthResponse;
+import ru.clevertec.auth.server.web.mapper.UserMapper;
+import ru.clevertec.auth.server.web.model.AuthRequest;
+import ru.clevertec.auth.server.web.model.AuthResponse;
 import ru.clevertec.auth.server.service.AuthService;
 import ru.clevertec.auth.server.service.TokenService;
 import ru.clevertec.auth.server.service.UserService;

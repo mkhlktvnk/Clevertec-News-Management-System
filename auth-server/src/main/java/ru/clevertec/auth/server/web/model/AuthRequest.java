@@ -1,4 +1,4 @@
-package ru.clevertec.auth.server.model;
+package ru.clevertec.auth.server.web.model;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

@@ -1,4 +1,4 @@
-package ru.clevertec.auth.server.model;
+package ru.clevertec.auth.server.web.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
