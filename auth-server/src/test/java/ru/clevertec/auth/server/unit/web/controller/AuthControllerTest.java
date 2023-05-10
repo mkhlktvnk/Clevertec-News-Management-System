@@ -1,4 +1,4 @@
-package ru.clevertec.auth.server.unit.controller;
+package ru.clevertec.auth.server.unit.web.controller;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
