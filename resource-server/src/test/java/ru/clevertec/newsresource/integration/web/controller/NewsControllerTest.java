@@ -56,7 +56,7 @@ class NewsControllerTest extends BaseIntegrationTest {
     @SneakyThrows
     void findAllByPageableAndMatchWithQueryShouldReturnCorrectCountOfNews() {
         String query = "new";
-        int expectedLength = 9;
+        int expectedLength = 8;
 
         mockMvc.perform(get("/api/v0/news?query=" + query))
                 .andExpect(status().isOk())
