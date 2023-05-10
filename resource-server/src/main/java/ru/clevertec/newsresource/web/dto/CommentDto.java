@@ -1,5 +1,6 @@
 package ru.clevertec.newsresource.web.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
@@ -17,6 +18,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 @Getter
 @Setter
 @NoArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class CommentDto {
 
     /**
@@ -74,7 +76,7 @@ public class CommentDto {
     )
     @NotNull
     @Positive
-    @JsonProperty(value = "newsId", access = JsonProperty.Access.WRITE_ONLY)
+    @JsonProperty(value = "newsId")
     private Long newsId;
 
 }
