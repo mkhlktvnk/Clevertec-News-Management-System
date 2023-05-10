@@ -12,7 +12,6 @@ import org.testcontainers.containers.PostgreSQLContainer;
 @Transactional
 @SpringBootTest
 @ActiveProfiles("test")
-@Sql(value = "classpath:db/data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 public class BaseIntegrationTest {
 
     private static final PostgreSQLContainer<?> POSTGRES_CONTAINER = new PostgreSQLContainer<>("postgres:13.3");
