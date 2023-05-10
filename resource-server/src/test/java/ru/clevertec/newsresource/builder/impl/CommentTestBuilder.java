@@ -1,10 +1,8 @@
 package ru.clevertec.newsresource.builder.impl;
 
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.With;
-import org.hibernate.annotations.CreationTimestamp;
 import ru.clevertec.newsresource.builder.TestBuilder;
 import ru.clevertec.newsresource.entity.Comment;
 import ru.clevertec.newsresource.entity.News;

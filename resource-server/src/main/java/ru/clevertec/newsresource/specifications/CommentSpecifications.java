@@ -23,9 +23,7 @@ public class CommentSpecifications {
     }
 
     public Specification<Comment> hasNewsId(Long newsId) {
-        return ((root, query, criteriaBuilder) -> {
-            return criteriaBuilder.equal(root.get("news"), newsId);
-        });
+        return ((root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("news"), newsId));
     }
 
 }
