@@ -1,10 +1,12 @@
-# News Management System
+![image](https://github.com/mkhlktvnk/Clevertec-News-Management-System/assets/70900496/986694de-a291-45d6-8d30-909ab575d119)
 
-## Project Description
+# News Management System 📰
+
+## Project Description ✍️
 
 #### This project consists of two parts: an API for managing news and comments, which allows users to view, add, edit, and delete news and comments based on their role, as well as an API for authentication, which allows users to register, log in, and validate previously issued access tokens.
 
-## Technologies Used
+## Technologies Used 🚀
 * Java 
 * Gradle
 * Spring Boot
@@ -13,7 +15,7 @@
 * Docker
 * Redis / Custom in-memory cache
 
-## API:
+## API 🌐
 ### Authorization server:
 | Http Method | URI            | Description                                                        |
 |-------------|----------------|--------------------------------------------------------------------|
@@ -32,7 +34,7 @@
 | PATCH       | /api/v0/comments/{commentId}    | Partially update comment (only those fields that are present in request body) |
 | DELETE      | /api/v0/news/{newsId}           | Remove news by id                                                             |
 | DELETE      | /api/v0/comments/{commentId}    | Remove comment by id                                                          |  
-## Database structure:
+## Database structure 💽
 ### Users database:
 ```postgresql
     CREATE TABLE IF NOT EXISTS roles
