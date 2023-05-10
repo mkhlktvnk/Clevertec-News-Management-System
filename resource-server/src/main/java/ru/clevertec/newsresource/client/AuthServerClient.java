@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 /**
  * Interface for communicating with the authentication server.
  */
-@FeignClient(value = "auth-server", url = "http://auth-server:9000/")
+@FeignClient(value = "auth-server", url = "${application.auth-server-host}")
 public interface AuthServerClient {
 
     /**

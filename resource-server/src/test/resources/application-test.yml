@@ -10,6 +10,9 @@ spring:
     enabled: true
     change-log: db/changelog/db.changelog-test.yaml
 
+application:
+  auth-server-host: localhost:9000
+
 cache:
   evict-strategy: LRU
   capacity: 1000
