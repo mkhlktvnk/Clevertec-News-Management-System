@@ -10,6 +10,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import ru.clevertec.auth.server.integration.BaseIntegrationTest;
 import ru.clevertec.auth.server.web.model.AuthRequest;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -42,7 +43,7 @@ class AuthControllerTest extends BaseIntegrationTest {
 
     @Test
     @SneakyThrows
-    void registerReturnAuthResponseWithNotNullIdAndCorrectUsername() {
+    void registerShouldReturnAuthResponseWithNotNullIdAndCorrectUsername() {
         AuthRequest request = AuthRequest.builder()
                 .username("user123")
                 .password("password123")
@@ -55,5 +56,15 @@ class AuthControllerTest extends BaseIntegrationTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id").isNotEmpty())
                 .andExpect(jsonPath("$.username").value(request.getUsername()));
+    }
+
+    @Test
+    @SneakyThrows
+    void validateShouldReturnUnauthorizedStatus() {
+        String token = "invalid token";
+
+        mockMvc.perform(get("/auth/validate")
+                    .header("Authorization", token))
+                .andExpect(status().isUnauthorized());
     }
 }
