@@ -57,7 +57,7 @@ public class CommentDto {
     )
     @NotNull
     @Positive
-    @JsonProperty(value = "newsId")
+    @JsonProperty(value = "newsId", access = JsonProperty.Access.WRITE_ONLY)
     private Long newsId;
 
 }
