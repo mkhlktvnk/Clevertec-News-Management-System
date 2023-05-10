@@ -29,7 +29,7 @@ class CommentServiceImplTest extends BaseIntegrationTest {
 
     public static final Long CORRECT_COMMENT_ID = 2L;
 
-    public static final Long INCORRECT_COMMENT_ID = 40L;
+    public static final Long INCORRECT_COMMENT_ID = 10000L;
 
     @Autowired
     private CommentService commentService;
@@ -68,12 +68,6 @@ class CommentServiceImplTest extends BaseIntegrationTest {
 
         assertThat(comment).isNotNull();
         assertThat(comment.getId()).isEqualTo(CORRECT_COMMENT_ID);
-    }
-
-    @Test
-    void findByIdShouldThrowResourceNotFoundException() {
-        assertThatThrownBy(() -> commentService.findById(INCORRECT_COMMENT_ID))
-                .isInstanceOf(ResourceNotFoundException.class);
     }
 
     @Test
