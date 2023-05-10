@@ -38,6 +38,9 @@ import ru.clevertec.newsresource.web.mapper.NewsMapper;
 
 import java.util.List;
 
+/**
+ * Controller class for handling CRUD operations on news articles
+ */
 @Tag(name = "News API", description = "Operations for working with news")
 @RestController
 @RequestMapping("/api/v0")
@@ -46,6 +49,13 @@ public class NewsController {
     private final NewsService newsService;
     private final NewsMapper newsMapper = Mappers.getMapper(NewsMapper.class);
 
+    /**
+     * Retrieves a list of news articles based on the specified pagination parameters and query string.
+     *
+     * @param pageable the pagination parameters for the query
+     * @param query the query string used to filter the results (optional)
+     * @return a {@link ResponseEntity} containing a list of {@link NewsDto} objects representing the news articles
+     */
     @Operation(summary = "Get news with pagination and optional full-text search")
     @Parameters(value = {
             @Parameter(
@@ -97,7 +107,12 @@ public class NewsController {
         return ResponseEntity.ok(newsMapper.toDto(news));
     }
 
-
+    /**
+     * Retrieves a specific news article by its ID.
+     *
+     * @param id the ID of the news article to retrieve
+     * @return a {@link ResponseEntity} containing a {@link NewsDto} object representing the news article
+     */
     @Operation(summary = "Retrieve news by id")
     @Parameter(
             name = "id",
@@ -136,6 +151,13 @@ public class NewsController {
         return ResponseEntity.ok(newsMapper.toDto(news));
     }
 
+    /**
+     * Saves a new news article to the system.
+     *
+     * @param news the {@link NewsDto} object representing the news article to be saved
+     * @param user the {@link User} object representing the user who is saving the news article
+     * @return a {@link ResponseEntity} containing a {@link NewsDto} object representing the saved news article
+     */
     @Operation(summary = "Add new news")
     @ApiResponse(
             responseCode = "201",
@@ -152,6 +174,13 @@ public class NewsController {
         return ResponseEntity.status(HttpStatus.CREATED).body(newsMapper.toDto(savedNews));
     }
 
+    /**
+     *  Partially update news
+     *
+     * @param id the ID of the news to update
+     * @param updateNews the {@link NewsDto} object representing fields to update
+     * @param user the authenticated {@link User} object representing the user updating the comment
+     */
     @Operation(summary = "Update news by id")
     @Parameter(
             name = "id",
@@ -187,6 +216,12 @@ public class NewsController {
         newsService.updateNewsPartiallyById(id, newsMapper.toEntity(updateNews), user);
     }
 
+    /**
+     *  Delete news
+     *
+     * @param id the ID of the news to delete
+     * @param user the authenticated {@link User} object representing the user deleting comment
+     */
     @Operation(summary = "Delete news by id")
     @Parameter(
             name = "id",

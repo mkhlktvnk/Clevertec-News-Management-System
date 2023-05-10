@@ -9,6 +9,12 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+/**
+ * An implementation of a Least Recently Used (LRU) Cache that stores key-value pairs.
+ * The cache has a specified maximum capacity, and if the cache becomes full,
+ * the least recently used key-value pair is evicted to make space for new entries.
+ * Keys are unique within the cache and are stored as a combination of a prefix and a key.
+ */
 public class LRUCache implements Cache<String, Object> {
     private final int capacity;
     private final Map<String, Object> keyValueMap;
@@ -22,6 +28,14 @@ public class LRUCache implements Cache<String, Object> {
         this.lock = new ReentrantReadWriteLock();
     }
 
+    /**
+     * Adds a key-value pair to the cache. If the cache is already full, the least recently used
+     * key-value pair is evicted to make space for the new entry.
+     *
+     * @param key the key of the key-value pair
+     * @param prefix the prefix of the key for uniqueness within the cache
+     * @param value the value of the key-value pair
+     */
     @Override
     public void put(String key, String prefix, Object value) {
         lock.writeLock().lock();
@@ -44,6 +58,15 @@ public class LRUCache implements Cache<String, Object> {
         }
     }
 
+    /**
+     * Returns the value associated with the specified key. If the key is not found in the cache,
+     * an empty Optional is returned.
+     *
+     * @param key the key to look up
+     * @param prefix the prefix of the key for uniqueness within the cache
+     * @return an Optional containing the value associated with the key, or an empty Optional if
+     *         the key is not found in the cache
+     */
     @Override
     public Optional<Object> get(String key, String prefix) {
         lock.readLock().lock();
@@ -60,6 +83,12 @@ public class LRUCache implements Cache<String, Object> {
         }
     }
 
+    /**
+     * Removes the key-value pair associated with the specified key from the cache.
+     *
+     * @param key the key of the key-value pair to remove
+     * @param prefix the prefix of the key for uniqueness within the cache
+     */
     @Override
     public void evict(String key, String prefix) {
         lock.writeLock().lock();

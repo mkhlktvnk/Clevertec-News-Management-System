@@ -11,12 +11,21 @@ import ru.clevertec.newsresource.service.TokenService;
 import java.security.interfaces.RSAPublicKey;
 import java.util.List;
 
+/**
+ * Implementation of {@link TokenService} that provides methods to extract information from a JSON Web Token (JWT).
+ */
 @Service
 public class TokenServiceImpl implements TokenService {
 
     @Value("${jwt.publicKey}")
     private RSAPublicKey publicKey;
 
+    /**
+     * Extracts the user information from the JWT.
+     *
+     * @param token The JWT.
+     * @return The user information.
+     */
     @Override
     public User getUserInfoFromToken(String token) {
         String username = getUsernameFromToken(token);

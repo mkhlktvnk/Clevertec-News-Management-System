@@ -22,15 +22,39 @@ import ru.clevertec.newsresource.entity.Identifiable;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
+/**
+ * A Spring AOP aspect that provides caching functionality for methods annotated with
+ * {@link org.springframework.cache.annotation.Cacheable}, {@link org.springframework.cache.annotation.CachePut},
+ * or {@link org.springframework.cache.annotation.CacheEvict} annotations. This aspect is enabled only for
+ * development and testing profiles, and uses a {@link Cache} instance to store cached values.
+ */
 @Slf4j
 @Aspect
 @Component
 @Profile({"dev", "test"})
 @RequiredArgsConstructor
 public class CacheAspect {
+
+    /**
+     * The cache instance used to store cached values.
+     */
     private final Cache<String, Object> cache;
+
+    /**
+     * The SpEL expression parser used to parse cache key and prefix values.
+     */
     private final SpelExpressionParser parser = new SpelExpressionParser();
 
+    /**
+     * Advice method that intercepts method invocations annotated with {@link org.springframework.cache.annotation.Cacheable}
+     * and caches the method result using the cache instance. The cached value is retrieved from the cache
+     * if it is present and returned, otherwise the method is invoked and its result is cached and returned.
+     *
+     * @param proceedingJoinPoint The {@link ProceedingJoinPoint} representing the intercepted method invocation.
+     * @param cacheable           The {@link Cacheable} annotation used to annotate the intercepted method.
+     * @return The cached value, if present in the cache, or the result of the intercepted method invocation.
+     * @throws Throwable If an error occurs during the intercepted method invocation.
+     */
     @SneakyThrows
     @Around("cacheableGetMethods() && @annotation(cacheable)")
     public Object cacheableGetMethodsAdvice(ProceedingJoinPoint proceedingJoinPoint, Cacheable cacheable) {
@@ -49,6 +73,13 @@ public class CacheAspect {
         return result;
     }
 
+    /**
+     * Advice method that intercepts method invocations annotated with {@link org.springframework.cache.annotation.CachePut}
+     * and caches the method result using the cache instance.
+     *
+     * @param retVal   The value returned by the intercepted method invocation.
+     * @param cachePut The {@link CachePut} annotation used to annotate the intercepted method.
+     */
     @SneakyThrows
     @AfterReturning(value = "cachePutSaveMethods() && @annotation(cachePut)", returning = "retVal")
     public void cachePutSaveMethodsAdvice(Object retVal, CachePut cachePut) {
@@ -58,6 +89,13 @@ public class CacheAspect {
         cache.put(key, prefix, retVal);
     }
 
+    /**
+     * Advice method that intercepts method invocations annotated with {@link org.springframework.cache.annotation.CachePut}
+     * and updates the cached value using the cache instance.
+     *
+     * @param joinPoint The {@link JoinPoint} representing the intercepted method invocation.
+     * @param cachePut  The {@link CachePut} annotation used to annotate the intercepted method.
+     */
     @SneakyThrows
     @After("cachePutUpdateMethods() && @annotation(cachePut)")
     public void cachePutUpdateMethodsAdvice(JoinPoint joinPoint, CachePut cachePut) {
@@ -67,6 +105,13 @@ public class CacheAspect {
         cache.put(key, prefix, objectToPut);
     }
 
+    /**
+     * Advice executed after methods annotated with {@link org.springframework.cache.annotation.CacheEvict} are called.
+     * Evicts the cached object associated with the given key and prefix from the cache.
+     *
+     * @param joinPoint the join point for the advice
+     * @param cacheEvict the {@link org.springframework.cache.annotation.CacheEvict} annotation applied to the method
+     */
     @SneakyThrows
     @After("cacheEvictDeleteMethods() && @annotation(cacheEvict)")
     public void cachePutDeleteMethodsAdvice(JoinPoint joinPoint, CacheEvict cacheEvict) {

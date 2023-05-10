@@ -17,6 +17,9 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Represents a news article that can be created, read, updated, and deleted.
+ */
 @Getter
 @Setter
 @NoArgsConstructor
@@ -24,24 +27,43 @@ import java.util.List;
 @Table(name = "news")
 public class News implements Identifiable<Long> {
 
+    /**
+     * The unique identifier for the news article.
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    /**
+     * The username of the author who created the news article.
+     */
     @Column(nullable = false, updatable = false)
     private String username;
 
+    /**
+     * The timestamp of when the news article was created.
+     */
     @CreationTimestamp
     @Column(nullable = false)
     private Instant time;
 
+    /**
+     * The title of the news article.
+     */
     @Column(nullable = false)
     private String title;
 
+    /**
+     * The text content of the news article.
+     */
     @Column(nullable = false)
     private String text;
 
+    /**
+     * The list of comments associated with the news article.
+     */
     @OneToMany(mappedBy = "news", cascade = CascadeType.ALL)
     private List<Comment> comments = new ArrayList<>();
 
 }
+

@@ -27,6 +27,10 @@ import ru.clevertec.newsresource.web.mapper.CommentMapper;
 
 import java.util.List;
 
+/**
+ * Implements the {@link CommentService} interface and provides methods for
+ * retrieving, adding, updating, and deleting comments on news articles.
+ */
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -37,6 +41,18 @@ public class CommentServiceImpl implements CommentService {
     private final PermissionService<User, Comment> permissionService;
     private final CommentMapper commentMapper = Mappers.getMapper(CommentMapper.class);
 
+    /**
+     * Retrieves a list of comments on a news article, filtered by a search query
+     * and paginated.
+     *
+     * @param newsId the ID of the news article to retrieve comments for
+     * @param pageable the pagination information
+     * @param query the search query to filter comments by
+     * @return a list of comments on the specified news article, filtered by the
+     *         search query and paginated
+     * @throws ResourceNotFoundException if the news article with the specified ID
+     *                                   cannot be found
+     */
     @Override
     @Loggable
     public List<Comment> findAllByNewsIdAndPageableAndQueryMatch(
@@ -53,6 +69,14 @@ public class CommentServiceImpl implements CommentService {
         return commentRepository.findAll(searchSpecification, pageable).getContent();
     }
 
+    /**
+     * Retrieves a comment by its ID.
+     *
+     * @param commentId the ID of the comment to retrieve
+     * @return the comment with the specified ID
+     * @throws ResourceNotFoundException if the comment with the specified ID cannot
+     *                                   be found
+     */
     @Override
     @Loggable
     @Cacheable(value = "comment", key = "#commentId")
@@ -63,6 +87,16 @@ public class CommentServiceImpl implements CommentService {
                 ));
     }
 
+    /**
+     * Adds a new comment to a news article.
+     *
+     * @param newsId the ID of the news article to add the comment to
+     * @param comment the comment to add
+     * @param user the user adding the comment
+     * @return the newly created comment
+     * @throws ResourceNotFoundException if the news article with the specified ID
+     *                                   cannot be found
+     */
     @Override
     @Loggable
     @Transactional
@@ -77,6 +111,15 @@ public class CommentServiceImpl implements CommentService {
         return commentRepository.save(comment);
     }
 
+    /**
+     * Updates a comment partially by ID.
+     *
+     * @param commentId the ID of the comment to update
+     * @param user the user attempting to update the comment
+     * @param updateComment the updated fields of the comment
+     * @throws ResourceNotFoundException if the comment with the given ID is not found
+     * @throws AccessDeniedException if the user does not have permission to edit the comment
+     */
     @Override
     @Loggable
     @Transactional
@@ -95,6 +138,15 @@ public class CommentServiceImpl implements CommentService {
         commentRepository.save(commentToUpdate);
     }
 
+    /**
+     * Deletes a comment by ID if the user has permission to edit it. Throws a ResourceNotFoundException if the comment
+     * does not exist, or an AccessDeniedException if the user does not have permission to edit it.
+     *
+     * @param commentId The ID of the comment to delete
+     * @param user      The user requesting the deletion
+     * @throws ResourceNotFoundException if the comment with the given ID does not exist
+     * @throws AccessDeniedException     if the user does not have permission to delete the comment
+     */
     @Override
     @Loggable
     @Transactional

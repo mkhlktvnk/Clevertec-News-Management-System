@@ -38,6 +38,9 @@ import ru.clevertec.newsresource.web.mapper.CommentMapper;
 
 import java.util.List;
 
+/**
+ * Controller class for handling CRUD operations on comments.
+ */
 @Tag(name = "Comments API", description = "Operations for working with comments")
 @RestController
 @RequestMapping("/api/v0")
@@ -46,6 +49,17 @@ public class CommentController {
     private final CommentService commentService;
     private final CommentMapper commentMapper = Mappers.getMapper(CommentMapper.class);
 
+
+    /**
+     * Retrieves a list of comments associated with the specified news article, filtered by an optional search query and
+     * paginated according to the specified {@link Pageable} parameters.
+     *
+     * @param newsId the ID of the news article to retrieve comments for
+     * @param pageable the {@link Pageable} object containing pagination parameters
+     * @param query an optional search query to filter the comments by
+     * @return a {@link ResponseEntity} containing a list of {@link CommentDto} objects corresponding to the retrieved
+     *         comments, along with an HTTP status code indicating the success or failure of the operation
+     */
     @Operation(summary = "Get comments by news ID with pagination and optional full-text search")
     @Parameters(value = {
             @Parameter(
@@ -113,6 +127,13 @@ public class CommentController {
         return ResponseEntity.ok(commentMapper.toDto(comments));
     }
 
+    /**
+     * Retrieves a single comment with the specified ID.
+     *
+     * @param id the ID of the comment to retrieve
+     * @return a {@link ResponseEntity} containing a {@link CommentDto} object corresponding to the retrieved comment,
+     *         along with an HTTP status code indicating the success or failure of the operation
+     */
     @Operation(summary = "Get one comment by id")
     @Parameter(
             name = "id",
@@ -151,7 +172,14 @@ public class CommentController {
         return ResponseEntity.ok(commentMapper.toDto(comment));
     }
 
-
+    /**
+     * Adds a new comment to a news article.
+     *
+     * @param comment the {@link CommentDto} object representing the comment to add
+     * @param user the authenticated {@link User} object representing the user adding the comment
+     * @return a {@link ResponseEntity} containing a {@link CommentDto} object corresponding to the inserted comment,
+     *         along with an HTTP status code indicating the success or failure of the operation
+     */
     @Operation(summary = "Add a comment to the news by news ID")
     @Parameters(value = {
             @Parameter(
@@ -194,7 +222,14 @@ public class CommentController {
         return ResponseEntity.status(HttpStatus.CREATED).body(commentMapper.toDto(insertedComment));
     }
 
-
+    /**
+     * Updates an existing comment with the specified ID, modifying only the fields specified in the given
+     * {@link CommentDto} object.
+     *
+     * @param id the ID of the comment to update
+     * @param user the authenticated {@link User} object representing the user updating the comment
+     * @param updateComment the {@link CommentDto} object representing the fields to update
+     */
     @Operation(summary = "Update comment by comment id\"")
     @Parameters(value = {
             @Parameter(
@@ -232,6 +267,12 @@ public class CommentController {
         commentService.updateCommentPartiallyById(id, user, commentMapper.toEntity(updateComment));
     }
 
+    /**
+     * Deletes an existing comment with the specified ID.
+     *
+     * @param id the ID of the comment to delete
+     * @param user the authenticated {@link User} object representing the user deleting the comment
+     */
     @Operation(summary = "Delete comment by comment id")
     @ApiResponses(value = {
             @ApiResponse(
