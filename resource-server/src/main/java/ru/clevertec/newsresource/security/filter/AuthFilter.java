@@ -15,14 +15,14 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 import ru.clevertec.newsresource.client.AuthServerClient;
 import ru.clevertec.newsresource.security.constant.AuthConstant;
-import ru.clevertec.newsresource.service.TokenService;
+import ru.clevertec.newsresource.jwt.JwtParser;
 
 @Component
 @RequiredArgsConstructor
 public class AuthFilter extends OncePerRequestFilter {
 
     private final AuthServerClient authServerClient;
-    private final TokenService tokenService;
+    private final JwtParser jwtParser;
 
     @Override
     @SneakyThrows
@@ -32,7 +32,7 @@ public class AuthFilter extends OncePerRequestFilter {
         if (token != null) {
             ResponseEntity<?> validationResponse = authServerClient.validate(token);
             if (validationResponse.getStatusCode().isSameCodeAs(HttpStatus.OK)) {
-                User user = tokenService.getUserInfoFromToken(token);
+                User user = jwtParser.getUserInfoFromToken(token);
                 UsernamePasswordAuthenticationToken authenticationToken =
                         new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);

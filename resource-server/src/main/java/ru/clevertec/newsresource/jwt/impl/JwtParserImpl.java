@@ -1,4 +1,4 @@
-package ru.clevertec.newsresource.service.impl;
+package ru.clevertec.newsresource.jwt.impl;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -6,16 +6,16 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
-import ru.clevertec.newsresource.service.TokenService;
+import ru.clevertec.newsresource.jwt.JwtParser;
 
 import java.security.interfaces.RSAPublicKey;
 import java.util.List;
 
 /**
- * Implementation of {@link TokenService} that provides methods to extract information from a JSON Web Token (JWT).
+ * Implementation of {@link JwtParser} that provides methods to extract information from a JSON Web Token (JWT).
  */
 @Service
-public class TokenServiceImpl implements TokenService {
+public class JwtParserImpl implements JwtParser {
 
     @Value("${jwt.publicKey}")
     private RSAPublicKey publicKey;

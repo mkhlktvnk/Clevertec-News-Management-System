@@ -19,7 +19,7 @@ import ru.clevertec.newsresource.builder.impl.UserTestBuilder;
 import ru.clevertec.newsresource.integration.BaseIntegrationTest;
 import ru.clevertec.newsresource.integration.WireMockExtension;
 import ru.clevertec.newsresource.security.constant.AuthConstant;
-import ru.clevertec.newsresource.service.TokenService;
+import ru.clevertec.newsresource.jwt.JwtParser;
 import ru.clevertec.newsresource.web.dto.NewsDto;
 
 import java.util.List;
@@ -50,7 +50,7 @@ class NewsControllerTest extends BaseIntegrationTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private TokenService tokenService;
+    private JwtParser jwtParser;
 
     @Test
     @SneakyThrows
@@ -88,7 +88,7 @@ class NewsControllerTest extends BaseIntegrationTest {
         stubFor(WireMock.get(urlEqualTo("/auth/validate"))
                 .withHeader(AuthConstant.AUTHORIZATION, equalTo(token))
                 .willReturn(aResponse().withStatus(HttpStatus.OK.value())));
-        doReturn(user).when(tokenService).getUserInfoFromToken(token);
+        doReturn(user).when(jwtParser).getUserInfoFromToken(token);
 
         mockMvc.perform(post("/api/v0/news")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -113,7 +113,7 @@ class NewsControllerTest extends BaseIntegrationTest {
         stubFor(WireMock.get(urlEqualTo("/auth/validate"))
                 .withHeader(AuthConstant.AUTHORIZATION, equalTo(token))
                 .willReturn(aResponse().withStatus(HttpStatus.OK.value())));
-        doReturn(user).when(tokenService).getUserInfoFromToken(token);
+        doReturn(user).when(jwtParser).getUserInfoFromToken(token);
 
         mockMvc.perform(patch("/api/v0/news/" + NEWS_ID)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -133,7 +133,7 @@ class NewsControllerTest extends BaseIntegrationTest {
         stubFor(WireMock.get(urlEqualTo("/auth/validate"))
                 .withHeader(AuthConstant.AUTHORIZATION, equalTo(token))
                 .willReturn(aResponse().withStatus(HttpStatus.OK.value())));
-        doReturn(user).when(tokenService).getUserInfoFromToken(token);
+        doReturn(user).when(jwtParser).getUserInfoFromToken(token);
 
         mockMvc.perform(delete("/api/v0/news/" + NEWS_ID)
                         .contentType(MediaType.APPLICATION_JSON)

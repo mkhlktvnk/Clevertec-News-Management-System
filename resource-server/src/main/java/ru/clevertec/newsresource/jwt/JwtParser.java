@@ -1,11 +1,11 @@
-package ru.clevertec.newsresource.service;
+package ru.clevertec.newsresource.jwt;
 
 import org.springframework.security.core.userdetails.User;
 
 /**
  * This interface defines methods for working with JWT tokens.
  */
-public interface TokenService {
+public interface JwtParser {
 
     /**
      * Retrieves user information from a JWT token.
