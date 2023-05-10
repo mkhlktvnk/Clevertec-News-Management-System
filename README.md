@@ -21,6 +21,7 @@
 |-------------|----------------|--------------------------------------------------------------------|
 | GET         | /auth/validate | Access token validation                                            |
 | POST        | /auth/token    | Issuing an access token according to the user's authorization data |
+| POST        | /auth/register | Register new user                                                  |
 ### News management server (resource):
 | Http Method | URI                             | Description                                                                   |
 |-------------|---------------------------------|-------------------------------------------------------------------------------|
