@@ -8,6 +8,7 @@ spring:
         format_sql: true
   liquibase:
     enabled: true
+    change-log: db/changelog/db.changelog-test.yaml
 
 cache:
   evict-strategy: LRU
