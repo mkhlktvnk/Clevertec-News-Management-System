@@ -17,6 +17,9 @@ import ru.clevertec.auth.server.service.AuthService;
 import ru.clevertec.auth.server.web.model.AuthRequest;
 import ru.clevertec.auth.server.web.model.AuthResponse;
 
+/**
+ * Controller class for authentication-related endpoints.
+ */
 @Tag(
         name = "Authentication API",
         description = "Operations for authentication / registration / validation user data"
@@ -26,6 +29,12 @@ import ru.clevertec.auth.server.web.model.AuthResponse;
 public class AuthController {
     private final AuthService authService;
 
+    /**
+     * Authenticates a user and returns an access token.
+     *
+     * @param authRequest the authentication request containing the user's credentials
+     * @return a response entity containing the access token
+     */
     @Operation(summary = "Authenticate user and return access token")
     @ApiResponses(value = {
             @ApiResponse(
@@ -43,6 +52,12 @@ public class AuthController {
         return ResponseEntity.ok(token);
     }
 
+    /**
+     * Registers a new user.
+     *
+     * @param authRequest the registration request containing the user's credentials
+     * @return a response entity containing the authentication response
+     */
     @Operation(summary = "Register user")
     @ApiResponse(
             responseCode = "200",
@@ -54,6 +69,12 @@ public class AuthController {
         return ResponseEntity.ok(response);
     }
 
+    /**
+     * Validates an access token.
+     *
+     * @param token the access token to validate
+     * @return a response entity indicating whether the token is valid or not
+     */
     @Operation(summary = "Validate access token")
     @ApiResponses(value = {
             @ApiResponse(
@@ -71,3 +92,4 @@ public class AuthController {
                 ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 }
+

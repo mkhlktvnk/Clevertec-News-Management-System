@@ -18,6 +18,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 
+/**
+ * User entity class representing a user in the system.
+ * implements {@link UserDetails}
+ */
 @Getter
 @Setter
 @NoArgsConstructor
@@ -26,16 +30,28 @@ import java.util.Collection;
 @Table(name = "users")
 public class User implements UserDetails {
 
+    /**
+     * The unique identifier of user
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    /**
+    * The unique username
+    */
     @Column(nullable = false, unique = true)
     private String username;
 
+    /**
+     * User's password
+    */
     @Column(nullable = false)
     private String password;
 
+    /**
+     * The collection of roles associated with user
+     */
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "users_roles",

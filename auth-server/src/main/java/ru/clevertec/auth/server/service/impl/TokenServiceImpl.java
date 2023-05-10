@@ -15,11 +15,22 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Implementation of {@link TokenService} interface that provides functionality
+ * for generating and validating JWT tokens.
+ */
 @Service
 @RequiredArgsConstructor
 public class TokenServiceImpl implements TokenService {
     private final JwtProperties properties;
 
+    /**
+     * Generates a new JWT token for the given username and collection of roles.
+     *
+     * @param username the username to include in the token
+     * @param roles    the roles to include in the token
+     * @return the generated JWT token
+     */
     @Override
     public String generateToken(String username, Collection<? extends GrantedAuthority> roles) {
         Date date = Date.from(LocalDateTime.now().plusMinutes(properties.getExpiration())
@@ -35,6 +46,12 @@ public class TokenServiceImpl implements TokenService {
                 .compact();
     }
 
+    /**
+     * Validates the given JWT token.
+     *
+     * @param token the JWT token to validate
+     * @return {@code true} if the token is valid, {@code false} otherwise
+     */
     @Override
     public boolean isTokenValid(String token) {
         try {
@@ -59,3 +76,4 @@ public class TokenServiceImpl implements TokenService {
         return roles.stream().map(GrantedAuthority::getAuthority).toList();
     }
 }
+

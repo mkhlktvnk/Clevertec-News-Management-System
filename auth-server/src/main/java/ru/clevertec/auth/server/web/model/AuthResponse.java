@@ -9,7 +9,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Schema(description = "AuthResponse")
+/**
+ * AuthResponse
+ */
 @Getter
 @Setter
 @Builder
@@ -17,6 +19,9 @@ import lombok.Setter;
 @NoArgsConstructor
 public class AuthResponse {
 
+    /**
+     * ID of registered user
+     */
     @Schema(
             description = "ID of registered user",
             example = "123"
@@ -24,6 +29,9 @@ public class AuthResponse {
     @JsonProperty(value = "id", access = Access.READ_ONLY)
     private Long id;
 
+    /**
+     * username of registered user
+     */
     @Schema(
             description = "username of registered user",
             example = "user123"
@@ -32,3 +40,4 @@ public class AuthResponse {
     private String username;
 
 }
+

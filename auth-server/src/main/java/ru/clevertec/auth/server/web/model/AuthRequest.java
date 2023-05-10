@@ -9,6 +9,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * Represents a request to authenticate a user.
+ */
 @Schema(description = "AuthRequest")
 @Getter
 @Setter
@@ -17,6 +20,9 @@ import lombok.Setter;
 @NoArgsConstructor
 public class AuthRequest {
 
+    /**
+     * The username of the user to authenticate.
+     */
     @Schema(
             description = "Username of user to authenticate",
             example = "user123"
@@ -25,6 +31,9 @@ public class AuthRequest {
     @NotBlank
     private String username;
 
+    /**
+     * The password of the user to authenticate.
+     */
     @Schema(
             description = "Password of user to authenticate",
             example = "password1123"
@@ -34,3 +43,4 @@ public class AuthRequest {
     private String password;
 
 }
+

@@ -10,12 +10,17 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
-@Schema(description = "News DTO")
+/**
+ * News DTO
+ */
 @Getter
 @Setter
 @NoArgsConstructor
 public class NewsDto {
 
+    /**
+     * News id
+     */
     @Schema(
             name = "id",
             description = "News id",
@@ -25,6 +30,9 @@ public class NewsDto {
     @JsonProperty(value = "id", access = JsonProperty.Access.READ_ONLY)
     private Long id;
 
+    /**
+     * Username of user who posted this news
+     */
     @Schema(
             name = "username",
             description = "Username of user who posted this news",
@@ -33,6 +41,9 @@ public class NewsDto {
     @JsonProperty(value = "username", access = JsonProperty.Access.READ_ONLY)
     private String username;
 
+    /**
+     * Time when news was posted
+     */
     @Schema(
             name = "time",
             description = "Time when news was posted",
@@ -42,6 +53,9 @@ public class NewsDto {
     @JsonProperty(value = "time", access = JsonProperty.Access.READ_ONLY)
     private String time;
 
+    /**
+     * News title
+     */
     @Schema(
             name = "title",
             description = "News title",
@@ -52,11 +66,14 @@ public class NewsDto {
     @JsonProperty(value = "title")
     private String title;
 
+    /**
+     * News text
+     */
     @Schema(
             name = "text",
             description = "News text",
             example = "Tesla has introduced a new self-driving technology " +
-                      "that it claims will make driving safer and more convenient."
+                    "that it claims will make driving safer and more convenient."
     )
     @NotBlank
     @Size(min = 1)
@@ -64,3 +81,4 @@ public class NewsDto {
     private String text;
 
 }
+

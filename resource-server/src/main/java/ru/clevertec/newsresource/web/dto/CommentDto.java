@@ -11,12 +11,17 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
-@Schema(description = "Comment DTO")
+/**
+ * Comment DTO
+ */
 @Getter
 @Setter
 @NoArgsConstructor
 public class CommentDto {
 
+    /**
+     * Comment ID
+     */
     @Schema(
             description = "Comment ID",
             example = "1"
@@ -25,6 +30,9 @@ public class CommentDto {
     @JsonProperty(value = "id", access = JsonProperty.Access.READ_ONLY)
     private Long id;
 
+    /**
+     * The time the comment was posted
+     */
     @Schema(
             description = "The time the comment was posted",
             example = "2023-04-28T22:42:29.950354Z"
@@ -33,6 +41,9 @@ public class CommentDto {
     @JsonProperty(value = "time", access = JsonProperty.Access.READ_ONLY)
     private String time;
 
+    /**
+     * The name of the user who left the comment
+     */
     @Schema(
             description = "The name of the user who left the comment",
             example = "JohnSmith123"
@@ -42,6 +53,9 @@ public class CommentDto {
     @JsonProperty(value = "username", access = JsonProperty.Access.READ_ONLY)
     private String username;
 
+    /**
+     * Comment text
+     */
     @Schema(
             description = "Comment text",
             example = "Self-driving cars are the future. Can't wait to see how this technology develops!"
@@ -51,6 +65,9 @@ public class CommentDto {
     @JsonProperty(value = "text")
     private String text;
 
+    /**
+     * News id to add to comment
+     */
     @Schema(
             description = "News id to add to comment",
             example = "1"
@@ -61,3 +78,4 @@ public class CommentDto {
     private Long newsId;
 
 }
+
