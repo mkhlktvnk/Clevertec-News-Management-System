@@ -27,6 +27,21 @@ class AuthControllerTest extends BaseIntegrationTest {
 
     @Test
     @SneakyThrows
+    void authenticateShouldReturnAccessTokenAndOkStatus() {
+        AuthRequest request = AuthRequest.builder()
+                .username("john_doe")
+                .password("password123")
+                .build();
+
+        mockMvc.perform(post("/auth/token")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isNotEmpty());
+    }
+
+    @Test
+    @SneakyThrows
     void registerReturnAuthResponseWithNotNullIdAndCorrectUsername() {
         AuthRequest request = AuthRequest.builder()
                 .username("user123")
