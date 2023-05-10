@@ -34,18 +34,36 @@ public class TokenServiceImpl implements TokenService {
         return new User(username, "", authorities);
     }
 
-    private String getUsernameFromToken(String token) {
+    /**
+     * Extracts the username from token
+     *
+     * @param token The JWT.
+     * @return Extracted username.
+     */
+    public String getUsernameFromToken(String token) {
         Claims claims = getClaimsFromToken(token);
         return claims.get("username").toString();
     }
 
-    private List<SimpleGrantedAuthority> getRolesFromToken(String token) {
+    /**
+     * Extracts the roles from token
+     *
+     * @param token The JWT.
+     * @return Extracted authorities.
+     */
+    public List<SimpleGrantedAuthority> getRolesFromToken(String token) {
         Claims claims = getClaimsFromToken(token);
         List<String> roles = (List<String>) claims.get("roles");
         return roles.stream().map(SimpleGrantedAuthority::new).toList();
     }
 
-    private Claims getClaimsFromToken(String token) {
+    /**
+     * Extracts the claims from token
+     *
+     * @param token The JWT.
+     * @return Extracted claims.
+     */
+    public Claims getClaimsFromToken(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(publicKey)
                 .build()
